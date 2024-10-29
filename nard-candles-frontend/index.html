@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Vite + React</title>
+</head>
+<body>
+    <div id="root"></div>
+    <!-- Include the Chapa JavaScript SDK before your app script -->
+    <script src="https://js.chapa.co/v1/checkout.js"></script>
+    <script type="module" src="/src/main.jsx"></script>
+</body>
+
+<div class="product-popup" id="popup" style="display: none;">
+    <div class="popup-content">
+        <button class="close-popup">×</button>
+        <img src="product-image.jpg" alt="Product">
+        <h2>Product Name</h2>
+        <p>Description</p>
+        <div class="product-buttons">
+            <button className="add-to-cart-button">Add to Cart</button>
+            <button className="buy-button" onClick={handleBuyNow}>
+                Buy
+            </button>
+        </div>
+    </div>
+</div>
+
+</html>

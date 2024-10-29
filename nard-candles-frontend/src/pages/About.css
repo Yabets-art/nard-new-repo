@@ -1,0 +1,153 @@
+/* General Styles */
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px;
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.about-section,
+.mission-section,
+.unique-section,
+.journey-section,
+.sustainability-section {
+  margin-bottom: 60px;
+}
+
+h1, h2 {
+  font-family: 'Playfair Display', serif;
+  color: #2c3e50;
+  position: relative;
+}
+
+h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 2.5em;
+  margin-bottom: 15px;
+}
+
+p {
+  font-size: 1.2em;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 30px;
+  text-align: justify;
+}
+
+/* List */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  font-size: 1.2em;
+  line-height: 1.8;
+  margin-bottom: 10px;
+  color: #34495e;
+}
+
+li strong {
+  color: #e74c3c;
+}
+
+.about-container strong {
+  color: #2980b9;
+}
+
+/* Styling for section separators */
+h2::after {
+  content: '';
+  
+  width: 60px;
+  height: 3px;
+  background: #e74c3c;
+  margin: 10px auto;
+}
+
+/* Fade-in Animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hover effect on list items */
+ul li:hover {
+  color: #e67e22;
+  cursor: pointer;
+}
+
+/* Button styling (optional) */
+button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #2980b9;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3498db;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .about-container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2.2em;
+  }
+
+  h2 {
+    font-size: 1.8em;
+  }
+
+  p, li {
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-container {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  h2 {
+    font-size: 1.5em;
+  }
+
+  p, li {
+    font-size: 0.9em;
+  }
+
+  ul {
+    padding-left: 15px;
+  }
+}

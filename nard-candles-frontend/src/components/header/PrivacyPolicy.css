@@ -1,0 +1,26 @@
+.content-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.content-page h1, .content-page h2, .content-page h3 {
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+.content-page p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.content-page a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.content-page a:hover {
+  text-decoration: underline;
+}

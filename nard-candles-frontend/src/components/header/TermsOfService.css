@@ -1,0 +1,36 @@
+.content-page {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  h5 {
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
+  }
+  
+  p {
+    line-height: 1.6;
+  }
+  
+  a {
+    color: #f0a500;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  .terms-footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+  }
+

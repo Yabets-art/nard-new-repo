@@ -1,0 +1,84 @@
+.post-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.post-container h1 {
+  margin-bottom: 30px;
+  font-size: 2.5em;
+  color: #333;
+}
+
+.post-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.post-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.post-card:hover {
+  transform: translateY(-5px);
+}
+
+.post-card img {
+  max-width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.post-content {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.post-content h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.post-meta {
+  font-size: 0.9em;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.post-description {
+  font-size: 1em;
+  color: #666;
+  margin-bottom: auto;
+}
+
+.view-post-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  background-color: #8b4513;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s, transform 0.1s;
+  align-self: flex-end;
+  margin-top: 20px;
+}
+
+.view-post-button:hover {
+  background-color: #a0522d;
+}

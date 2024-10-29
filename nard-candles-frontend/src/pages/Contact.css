@@ -1,0 +1,123 @@
+.contact {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.contact h2 {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+}
+
+.contact p {
+  font-size: 1.2rem;
+  color: #555;
+  text-align: center;
+}
+
+form {
+  margin-top: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #444;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #f0a500;
+}
+
+textarea {
+  height: 150px;
+}
+
+button {
+  background: linear-gradient(to right, #8B4513, #F5F5DC);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  text-transform: uppercase;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background: linear-gradient(to right, #A0522D, #EEE8AA);
+}
+
+/* Popup styles */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.popup p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.popup button {
+  background-color: #f0a500;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.popup button:hover {
+  background-color: #e09e00;
+}
+
+@media (max-width: 768px) {
+  .contact {
+    padding: 1.5rem;
+  }
+
+  input, textarea, button {
+    width: 100%;
+  }
+}
