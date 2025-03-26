@@ -12,7 +12,8 @@ class DatabaseSeeder extends Seeder
             // CategoriesTableSeeder::class,
             // ProductSeeder::class,
             // OrdersTableSeeder::class,
-            FeaturedProductsSeeder::class,
+            // FeaturedProductsSeeder::class,
+            AdminSeeder::class,
         ]);
     }
 }
