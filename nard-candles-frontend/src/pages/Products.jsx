@@ -107,20 +107,24 @@ const Products = () => {
     };
 
     const handleBuyNow = () => {
+        if (!selectedProduct) return;
+    
         if (!window.Chapa) {
             console.error("Chapa SDK is not loaded.");
             return;
         }
-
-        if (!selectedProduct) return;
-
+    
         window.Chapa.open({
             public_key: "CHAPUBK_TEST-YJWurdzQrP6a9VXtowU7yYDybk6tZQ06",
             tx_ref: `tx_${Date.now()}`,
             amount: parseFloat(selectedProduct.price),
-            currency: "USD",
-            email: "customer@example.com",
+            currency: "ETB", // Change to ETB for Ethiopian currency
+            email: "customer@example.com", // Get user's email dynamically if possible
+            first_name: "John", // Optional
+            last_name: "Ds",  // Optional
+            phone_number: "+251912345678", // Optional
             callback_url: "http://your-callback-url.com",
+            return_url: "http://your-website.com/payment-success",
             customization: {
                 title: selectedProduct.name,
                 description: selectedProduct.description,
@@ -128,6 +132,7 @@ const Products = () => {
             },
         });
     };
+    
 
     return (
         <div className="products-container">

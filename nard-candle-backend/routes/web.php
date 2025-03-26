@@ -11,6 +11,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\MessageController;
 use App\Http\Middleware\VerifyCsrfToken;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
+use App\Http\Controllers\TrainersController;
 
 
 Route::get('/sanctum/csrf-cookie', function () {
@@ -21,14 +22,8 @@ Route::get('/', function () {
     return view('admin/index');
 });
 
-// Route::get('/csrf-token', function () {
-//     return response()->json(['csrfToken' => csrf_token()]);
-// });
-
 
 Route::view('profile', 'profile')->middleware(['auth'])->name('profile');
-
-// require __DIR__.'/auth.php';
 
 
 Route::get('/admin', function () {
@@ -51,31 +46,6 @@ Route::get('/admin/order', function () {
 })->name('admin.order');
 
 
-// ===================List of Api
-// Route::prefix('api')->group(function () {
-
-//     Route::get('/products', [ProductApiController::class, 'index']);
-//     Route::post('/custom-orders', [CustomOrderController::class, 'store']);
-//     Route::get('/promotions', [PromotionController::class, 'index']);
-
-//     Route::prefix('admin')->name('admin.')->group(function () {
-//         Route::resource('products', ProductController::class);
-//         Route::get('/admin/messages', [MessageController::class, 'index'])->name('admin.message.index');
-//     });
-
-//     Route::post('/messages', [MessageController::class, 'store']);
-
-//     Route::get('/csrf-token', function () {
-//         return response()->json(['csrfToken' => csrf_token()]);
-//     });
-
-// });
-
-// ===================List of Api
-
-
-
-
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('product', [ProductController::class, 'index'])->name('product');
     Route::post('product', [ProductController::class, 'store'])->name('product.store');
@@ -83,7 +53,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('product/{id}', [ProductController::class, 'update'])->name('product.update');
     Route::delete('product/{id}', [ProductController::class, 'delete'])->name('product.delete');
 });
-
 
 
 Route::get('/admin/custom-orders', [CustomOrderController::class, 'index'])->name('custom-orders.index');
@@ -143,3 +112,26 @@ Route::delete('/admin/post/{id}', [PostController::class, 'destroy'])->name('adm
 Route::post('/admin/message', [MessageController::class, 'store']);
 Route::get('/admin/message', [MessageController::class, 'index'])->name('admin.message.index');
 Route::get('/admin/message/{id}', [MessageController::class, 'show'])->name('admin.message.show');
+
+
+
+
+
+
+Route::get('/admin/trainers', function () {
+    return view('admin.trainees');
+})->name('admin.trainers');
+
+Route::get('/admin/trainingDays',  [TrainersController::class, 'trainingDays'])->name('admin.trainingDays');
+
+
+Route::get('/admin/trainees', [TrainersController::class, 'index'])->name('admin.trainers');
+
+
+Route::post('/admin/trainees', [TrainersController::class, 'show'])->name('admin.trainees.show');
+Route::put('/admin/trainees/{trainee}', [TrainersController::class, 'removeUnpaid'])->name('admin.trainees.removeUnpaid');
+Route::delete('/admin/trainees/{trainee}', [TrainersController::class, 'trainingDays'])->name('admin.trainees.trainingDays');
+// Route::patch('/admin/trainees/{trainee}', [TrainersController::class, 'updateTrainingDays'])->name('admin.training-days.update');
+Route::post('/admin/trainees/update-days', [TrainersController::class, 'updateTrainingDays'])->name('admin.training-days.update');
+
+

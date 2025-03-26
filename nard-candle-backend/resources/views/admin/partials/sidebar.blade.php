@@ -78,4 +78,19 @@
             <span>Messages</span>
         </a>
     </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.trainingDays')}}">
+            <i class="fas fa-fw fa-calendar"></i>
+            <span>Training Days</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.trainers') }}">
+            <i class="fas fa-fw fa-comments"></i>
+            <span>Trainers</span>
+        </a>
+    </li>
+    
 </aside>

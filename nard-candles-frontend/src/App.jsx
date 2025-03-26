@@ -10,6 +10,7 @@ import About from './pages/About';
 import TermsOfService from './components/header/TermsOfService';
 import PrivacyPolicy from './components/header/PrivacyPolicy';
 import MyCart from './pages/MyCart';
+import RegistrationPage from "./pages/RegistrationPage";
 function App() {
   return (
     <>
@@ -24,6 +25,7 @@ function App() {
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/my-cart" element={<MyCart />} />
+        <Route path="/register" element={<RegistrationPage />} />
       </Routes>
       <Footer />
     </>

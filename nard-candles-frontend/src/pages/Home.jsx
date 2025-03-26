@@ -9,6 +9,7 @@ import mostSold6 from '../assets/mostSold6.jpg';
 import mostLiked1 from '../assets/mostLiked1.jpg';
 import mostLiked2 from '../assets/mostLiked2.jpg';
 import mostLiked3 from '../assets/mostLiked3.jpg';
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [promotions, setPromotions] = useState([]);
@@ -184,6 +185,14 @@ const Home = () => {
           <li>Wide Range of Scents</li>
         </ul>
       </section>
+
+      
+  <Link to="/register">
+    <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+      Register for Training
+    </button>
+  </Link>
+
     </div>
   );
 };

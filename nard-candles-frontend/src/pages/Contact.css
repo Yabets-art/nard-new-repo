@@ -76,7 +76,7 @@ button:hover {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -84,13 +84,11 @@ button:hover {
 }
 
 .popup {
-  background-color: white;
+  background-color: #fff;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  max-width: 400px;
-  width: 100%;
 }
 
 .popup p {
@@ -101,16 +99,20 @@ button:hover {
 
 .popup button {
   background-color: #f0a500;
-  color: white;
+  color: #fff;
   border: none;
   padding: 0.75rem 1.5rem;
+  font-size: 1rem;
   cursor: pointer;
   border-radius: 4px;
 }
 
+
 .popup button:hover {
   background-color: #e09e00;
+  
 }
+
 
 @media (max-width: 768px) {
   .contact {
