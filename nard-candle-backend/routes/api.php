@@ -13,6 +13,8 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\WebPaymentController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\UserCartController;
+use App\Http\Controllers\TrainersController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\LoginController;
@@ -34,13 +36,15 @@ Route::post('/custom-orders', [CustomOrderController::class, 'store']);
 Route::get('/promotions', [PromotionController::class, 'promotions']);
 Route::get('/featured_products', [FeaturedProductController::class, 'featured_products']);
 Route::get('/youtube-videos', [YouTubeVideoController::class, 'youtube_videos']);
+Route::get('/trainees', [TrainersController::class, 'index']);
+Route::get('/TrainingDay', [TrainersController::class, 'trainingDays']);
 
 
 
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('products', ProductController::class);
-    // Route::get('/admin/messages', [MessageController::class, 'index'])->name('admin.message.index');
+    
 });
 
 Route::post('/messages', [MessageController::class, 'store']);
@@ -52,12 +56,7 @@ Route::get('/csrf-token', function () {
 
 Route::get('user-cart', [UserCartController::class, 'index']);
 Route::post('user-cart', [UserCartController::class, 'store']);
-// Route::middleware('auth')->group(function () {
-//     Route::get('user-cart', [UserCartController::class, 'index']); // Display the user's cart
-//     Route::post('user-cart', [UserCartController::class, 'store']); // Add product to the user's cart
-//     Route::put('user-cart/{id}', [UserCartController::class, 'update']); // Update the user's cart
-//     Route::delete('user-cart/{id}', [UserCartController::class, 'destroy']); // Remove product from the cart
-// });
+
 
 
 Route::get('/posts', [PostController::class, 'getPosts']);

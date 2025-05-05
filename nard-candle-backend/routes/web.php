@@ -13,6 +13,7 @@ use App\Http\Controllers\WebPaymentController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Middleware\VerifyCsrfToken;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
+use App\Http\Controllers\TrainersController;
 
 /*
 |--------------------------------------------------------------------------

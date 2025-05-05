@@ -116,6 +116,7 @@ const Products = () => {
             console.error('Error adding to cart:', error);
         });
     };
+    
 
     return (
         <div className="products-container">
