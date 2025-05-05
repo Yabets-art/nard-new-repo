@@ -11,6 +11,6 @@ class YouTubeVideo extends Model
 
     protected $fillable = ['link', 'description'];
 
-    // Specify the table name if it doesn't follow Laravel's naming convention
-    protected $table = 'youtube_videos';
+    // Update table name to match the renamed table in the migration
+    protected $table = 'you_tube_videos';
 }

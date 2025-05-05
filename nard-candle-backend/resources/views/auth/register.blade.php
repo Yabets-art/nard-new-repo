@@ -1,59 +1,100 @@
 <x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+    <div class="candle-card-wrapper">
+        <div class="candle-glow"></div>
+        <div class="loading-spinner"></div>
+        
+        <x-auth-card class="candle-card animate__animated animate__fadeIn">
+            @if(session('error'))
+                <div class="bg-red-500 text-white p-2 mb-4 rounded animate__animated animate__headShake">
+                    {{ session('error') }}
+                </div>
+            @endif
+            
+            <x-slot name="logo">
+                <div class="text-center mb-5">
+                    <a href="/" class="inline-block">
+                        <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    </a>
+                    <h1 class="auth-page-title text-2xl mt-3 animate__animated animate__fadeIn animate__delay-1s">Nard Candles</h1>
+                    <p class="text-candle-shadow mt-1 animate__animated animate__fadeIn animate__delay-1s">Admin Dashboard</p>
+                </div>
+            </x-slot>
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
+            <!-- Session Status -->
+            <x-auth-session-status class="mb-4" :status="session('status')" />
 
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
+            <!-- Validation Errors -->
+            <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-            <!-- Name -->
-            <div>
-                <x-label for="name" :value="__('Name')" />
+            <div class="animate__animated animate__fadeIn animate__delay-1s">
+                <div class="text-center mb-6">
+                    <p class="text-candle-shadow">This is an admin-only system. Registration is not available.</p>
+                </div>
 
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
+                <div class="flex items-center justify-end mt-4">
+                    <a class="underline text-sm text-candle-shadow hover:text-candle-flame transition duration-150 ease-in-out" href="{{ route('login') }}">
+                        Go to Login Page
+                    </a>
+                </div>
             </div>
-
-            <!-- Email Address -->
-            <div class="mt-4">
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
-            </div>
-
-            <!-- Password -->
-            <div class="mt-4">
-                <x-label for="password" :value="__('Password')" />
-
-                <x-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="new-password" />
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mt-4">
-                <x-label for="password_confirmation" :value="__('Confirm Password')" />
-
-                <x-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-
-                <x-button class="ml-4">
-                    {{ __('Register') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
+        </x-auth-card>
+    </div>
+    
+    <style>
+        .text-candle-shadow {
+            color: var(--candle-shadow);
+        }
+        
+        .text-candle-flame {
+            color: var(--candle-flame);
+        }
+        
+        .text-candle-glow {
+            color: var(--candle-glow);
+        }
+        
+        .bg-candle-flame {
+            background-color: var(--candle-flame);
+        }
+        
+        .bg-candle-glow {
+            background-color: var(--candle-glow);
+        }
+        
+        .border-candle-flame {
+            border-color: var(--candle-flame);
+        }
+        
+        .border-candle-glow {
+            border-color: var(--candle-glow);
+        }
+        
+        .ring-candle-glow {
+            --tw-ring-color: var(--candle-glow);
+        }
+        
+        .focus\:border-candle-flame:focus {
+            border-color: var(--candle-flame);
+        }
+        
+        .focus\:border-candle-glow:focus {
+            border-color: var(--candle-glow);
+        }
+        
+        .focus\:ring-candle-glow:focus {
+            --tw-ring-color: var(--candle-glow);
+        }
+        
+        .hover\:text-candle-flame:hover {
+            color: var(--candle-flame);
+        }
+        
+        .hover\:bg-candle-glow:hover {
+            background-color: var(--candle-glow);
+        }
+        
+        .active\:bg-candle-flame:active {
+            background-color: var(--candle-flame);
+        }
+    </style>
 </x-guest-layout>

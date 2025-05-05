@@ -35,28 +35,67 @@ const Home = () => {
   console.log(promotions);
 
   useEffect(() => {
-    fetch(`${baseURL}api/featured_products`)
-      .then((response) => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        console.log('Fetching featured products from:', `${baseURL}api/featured_products`);
+        const response = await fetch(`${baseURL}api/featured_products`);
+        
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error(`Failed to fetch featured products: ${response.status} ${response.statusText}`);
         }
-        return response.json();
-      })
-      .then((data) => setFeaturedCandles(data))
-      .catch((error) => console.error('Error fetching featured products:', error));
+        
+        const data = await response.json();
+        console.log('Featured products data:', data);
+        setFeaturedCandles(data);
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+      }
+    };
+    
+    fetchFeaturedProducts();
   }, [baseURL]);
 
   const currentPromo = promotions[currentPromotion];
 
   useEffect(() => {
-    fetch(`${baseURL}api/youtube-videos`)
-      .then((response) => response.json())
-      .then((data) => setVideos(data))
-      .catch((error) => console.error('Error fetching videos:', error));
+    const fetchYouTubeVideos = async () => {
+      try {
+        console.log('Fetching YouTube videos from:', `${baseURL}api/youtube-videos`);
+        const response = await fetch(`${baseURL}api/youtube-videos`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch videos: ${response.status} ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('YouTube videos data:', data);
+        setVideos(data);
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+      }
+    };
+    
+    fetchYouTubeVideos();
   }, [baseURL]);
 
-  const extractVideoId = (link) => {
-    return link;
+  // Helper function to extract YouTube video ID from different URL formats
+  const extractVideoId = (url) => {
+    if (!url) return null;
+    
+    // Handle if the URL is already just the ID
+    if (url.length === 11 && /^[a-zA-Z0-9_-]{11}$/.test(url)) {
+      return url;
+    }
+    
+    let regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    let match = url.match(regExp);
+    
+    if (match && match[7].length === 11) {
+      return match[7];
+    } else {
+      console.warn('Could not extract video ID from URL:', url);
+      return null;
+    }
   };
 
   const styles = {
@@ -101,7 +140,15 @@ const Home = () => {
         <div className="gallery-scroll">
           {featuredCandles.map((candle) => (
             <div key={candle.id} className="gallery-item">
-              <img src={`${baseURL}storage/${candle.image}`} alt={candle.name} />
+              <img 
+                src={`${baseURL}storage/${candle.image}`} 
+                alt={candle.name} 
+                onError={(e) => {
+                  console.log('Image failed to load:', `${baseURL}storage/${candle.image}`);
+                  e.target.onerror = null;
+                  e.target.src = 'https://via.placeholder.com/150?text=Product';
+                }}
+              />
               <p>{candle.name}</p>
             </div>
           ))}
@@ -111,22 +158,52 @@ const Home = () => {
       {/* Video Section */}
       <section style={styles.video}>
         <h2>Discover Nard Candles</h2>
-        <div style={styles.videoGallery}>
-          {videos.map((video) => {
-            const videoId = extractVideoId(video.link);
-            return (
-              <div key={video.id} style={styles.videoItem}>
-                <iframe
-                  src={`https://www.youtube.com/embed/${videoId}`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-                <p>{video.description}</p>
-              </div>
-            );
-          })}
-        </div>
+        {videos.length > 0 ? (
+          <div style={styles.videoGallery}>
+            {videos.map((video) => {
+              let videoId;
+              try {
+                videoId = extractVideoId(video.link);
+              } catch (error) {
+                console.error('Error extracting video ID:', error, video);
+                videoId = null;
+              }
+              
+              return (
+                <div key={video.id} style={styles.videoItem}>
+                  {videoId ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${videoId}`}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      width="100%"
+                      height="250"
+                      onError={(e) => {
+                        console.error('Iframe error:', e);
+                      }}
+                    ></iframe>
+                  ) : (
+                    <div style={{ 
+                      backgroundColor: '#f0f0f0', 
+                      height: '250px', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center' 
+                    }}>
+                      <p>Video Unavailable</p>
+                    </div>
+                  )}
+                  <p>{video.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="no-videos-message">
+            <p>No videos available at the moment. Please check back later.</p>
+          </div>
+        )}
       </section>
 
       {/* Most Sold of the Week */}

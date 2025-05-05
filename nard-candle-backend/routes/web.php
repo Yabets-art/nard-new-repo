@@ -9,6 +9,8 @@ use App\Http\Controllers\FeaturedProductController;
 use App\Http\Controllers\YouTubeVideoController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\WebPaymentController;
+use App\Http\Controllers\CartItemController;
 use App\Http\Middleware\VerifyCsrfToken;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use App\Http\Controllers\TrainersController;
@@ -25,7 +27,7 @@ use App\Http\Controllers\TrainersController;
 */
 
 Route::get('/', function () {
-    return \view('auth/login');
+    return view('welcome');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -104,7 +106,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/message', [MessageController::class, 'index'])->name('admin.message.index');
     Route::get('/admin/message/{id}', [MessageController::class, 'show'])->name('admin.message.show');
 
-    // Add other admin-only routes here
+    Route::middleware(['ensure.user.authenticated'])->group(function () {
+        Route::post('/payment/initiate', [WebPaymentController::class, 'initiatePayment'])->name('payment.initiate');
+        Route::get('/payment/confirm', [WebPaymentController::class, 'confirmPayment'])->name('payment.confirm');
+    });
 });
 
 require __DIR__ . '/auth.php';

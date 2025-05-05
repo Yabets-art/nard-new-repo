@@ -11,9 +11,15 @@ import TermsOfService from './components/header/TermsOfService';
 import PrivacyPolicy from './components/header/PrivacyPolicy';
 import MyCart from './pages/MyCart';
 import RegistrationPage from "./pages/RegistrationPage";
+import MyOrders from './pages/MyOrders';
+import Register from './pages/Register';
+import Profile from './pages/Profile';
+import EmailTest from './pages/EmailTest';
+import AuthProvider from './context/AuthContext';
+
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -26,9 +32,13 @@ function App() {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/my-cart" element={<MyCart />} />
         <Route path="/register" element={<RegistrationPage />} />
+        <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/email-test" element={<EmailTest />} />
       </Routes>
       <Footer />
-    </>
+    </AuthProvider>
   );
 }
 
