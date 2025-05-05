@@ -32,12 +32,16 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        if (Auth::user()->is_admin) {
-            return redirect()->intended('/dashboard'); // Admins go to dashboard
+        if ($request->user()->is_admin) {
+            return redirect()->intended(RouteServiceProvider::HOME); // Use the HOME constant which points to dashboard
         }
 
+        // If not admin, logout and redirect with error
         Auth::logout();
-        return redirect('/')->with('error', 'Access denied. Admins only.');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect()->route('login')->with('error', 'Access denied. Admin credentials required.');
     }
 
 
