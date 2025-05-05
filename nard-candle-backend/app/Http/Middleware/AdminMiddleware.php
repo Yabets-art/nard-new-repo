@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AdminMiddleware
 {
@@ -18,12 +19,19 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check()) {
-            return redirect('/')->with('error', 'You must log in.');
+            // User is not logged in
+            return redirect()->route('login')->with('error', 'You must log in.');
         }
-
-        if (Auth::user()->is_admin !== 1) {
+        
+        // Get the user
+        $user = Auth::user();
+        
+        // Instead of using !== 1, just check if the column is falsy
+        if (!$user->is_admin) {
             Auth::logout();
-            return redirect('/')->with('error', 'Access denied. Admins only.');
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('login')->with('error', 'Access denied. Admin credentials required.');
         }
 
         return $next($request);

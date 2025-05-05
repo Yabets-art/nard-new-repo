@@ -112,4 +112,25 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
 });
 
+// Temporary admin access route (REMOVE THIS IN PRODUCTION)
+Route::get('/force-admin-access', function () {
+    // Find our admin user
+    $user = \App\Models\User::where('email', 'yabetsd29@gmail.com')->first();
+    
+    if (!$user) {
+        return "User not found!";
+    }
+    
+    // Force login
+    \Illuminate\Support\Facades\Auth::login($user);
+    
+    // Debug user info
+    echo "Logged in as: " . $user->email . "<br>";
+    echo "Is admin: " . ($user->is_admin ? 'YES' : 'NO') . "<br>";
+    echo "Admin type: " . gettype($user->is_admin) . "<br>";
+    echo "Admin value: " . var_export($user->is_admin, true) . "<br>";
+    
+    return redirect()->intended(\App\Providers\RouteServiceProvider::HOME);
+});
+
 require __DIR__ . '/auth.php';
