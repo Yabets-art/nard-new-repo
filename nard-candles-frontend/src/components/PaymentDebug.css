@@ -1,0 +1,98 @@
+.payment-debug {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: monospace;
+}
+
+.payment-debug h3 {
+  margin-top: 0;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.debug-section {
+  margin-bottom: 20px;
+}
+
+.debug-section h4 {
+  color: #495057;
+  margin-bottom: 10px;
+}
+
+.debug-content {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  overflow-x: auto;
+}
+
+.debug-content p {
+  margin: 5px 0;
+  line-height: 1.4;
+}
+
+.debug-content pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.debug-help {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #e2f2ff;
+  border-radius: 4px;
+  font-family: sans-serif;
+}
+
+.debug-help p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.debug-help a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.debug-help a:hover {
+  text-decoration: underline;
+}
+
+/* New styles for email debug section */
+.email-debug {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f0f9ff;
+  border-radius: 8px;
+  border: 1px solid #b8daff;
+}
+
+.email-debug.error-highlight {
+  background-color: #fff8f8;
+  border-color: #f5c6cb;
+}
+
+.email-value {
+  font-weight: bold;
+  padding: 3px 6px;
+  background-color: #e9ecef;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.validation-error {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #721c24;
+} 

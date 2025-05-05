@@ -1,5 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+import AddToCartButton from '../components/AddToCartButton';
+import LoginModal from '../components/auth/LoginModal';
 import './Products.css';
 
 const Products = () => {
@@ -10,55 +13,51 @@ const Products = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [loadedImages, setLoadedImages] = useState(new Set());
+    
+    const { isAuthenticated } = useAuth();
+
+    const handleImageLoad = useCallback((productId) => {
+        setLoadedImages(prev => new Set([...prev, productId]));
+    }, []);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
+                setLoading(true);
                 const response = await axios.get('http://127.0.0.1:8000/api/products');
-                setProducts(response.data);
-                setFilteredProducts(response.data);
-                setLoading(false);
+                
+                if (Array.isArray(response.data) && response.data.length > 0) {
+                    // Process the products to ensure image paths are correct
+                    const processedProducts = response.data.map(product => {
+                        let imagePath = product.image;
+                        // Fix specific image paths that have double .jpg extension
+                        if (imagePath === 'images/mostSold1.jpg' || imagePath === 'images/mostliked3.jpg') {
+                            imagePath = imagePath + '.jpg';
+                        }
+                        return {
+                            ...product,
+                            image: imagePath.startsWith('images/') ? imagePath : `images/${imagePath}`
+                        };
+                    });
+                    setProducts(processedProducts);
+                    setFilteredProducts(processedProducts);
+                } else {
+                    setError('No products found. The API returned an empty result.');
+                }
             } catch (err) {
-                setError('Failed to fetch products');
+                console.error('Error fetching products:', err);
+                setError(err.response ? `Server error ${err.response.status}` : 'Network error');
+            } finally {
                 setLoading(false);
-                console.error(err);
             }
         };
 
         fetchProducts();
     }, []);
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (event.target.className.includes('product-popup')) {
-                handleClosePopup();
-            }
-        };
-
-        if (selectedProduct) {
-            document.addEventListener('click', handleClickOutside);
-        } else {
-            document.removeEventListener('click', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    }, [selectedProduct]);
-
-    const handleSearchChange = (event) => {
-        const searchValue = event.target.value;
-        setSearchTerm(searchValue);
-        filterAndSortProducts(searchValue, sortOption);
-    };
-
-    const handleSortChange = (event) => {
-        const sortValue = event.target.value;
-        setSortOption(sortValue);
-        filterAndSortProducts(searchTerm, sortValue);
-    };
-
-    const filterAndSortProducts = (searchTerm, sortOption) => {
+    const filterAndSortProducts = useCallback((searchTerm, sortOption) => {
         let updatedProducts = products.filter((product) =>
             product.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
@@ -70,62 +69,51 @@ const Products = () => {
         }
 
         setFilteredProducts(updatedProducts);
-    };
+    }, [products]);
+
+    const handleSearchChange = useCallback((event) => {
+        const searchValue = event.target.value;
+        setSearchTerm(searchValue);
+        filterAndSortProducts(searchValue, sortOption);
+    }, [filterAndSortProducts, sortOption]);
+
+    const handleSortChange = useCallback((event) => {
+        const sortValue = event.target.value;
+        setSortOption(sortValue);
+        filterAndSortProducts(searchTerm, sortValue);
+    }, [filterAndSortProducts, searchTerm]);
 
     const handleProductSelect = (product) => {
         setSelectedProduct(product);
     };
 
-    const handleClosePopup = () => {
-        setSelectedProduct(null);
-    };
-
-    const handleAddToCart = async () => {
-        if (!selectedProduct) return;
-
-        try {
-            const response = await fetch("http://localhost:8000/api/user-cart", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    productId: selectedProduct.id,
-                    quantity: 1,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            const data = await response.json();
-            console.log("Product added to cart:", data);
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
-    const handleBuyNow = () => {
-        if (!window.Chapa) {
-            console.error("Chapa SDK is not loaded.");
+    const handleBuyNow = (product) => {
+        if (!isAuthenticated) {
+            setShowLoginModal(true);
             return;
         }
 
-        if (!selectedProduct) return;
+        // Add the product to cart and proceed to checkout
+        const cartItem = {
+            product_id: product.id,
+            product_name: product.name,
+            quantity: 1,
+            price: product.price,
+            total_price: product.price
+        };
 
-        window.Chapa.open({
-            public_key: "CHAPUBK_TEST-YJWurdzQrP6a9VXtowU7yYDybk6tZQ06",
-            tx_ref: `tx_${Date.now()}`,
-            amount: parseFloat(selectedProduct.price),
-            currency: "USD",
-            email: "customer@example.com",
-            callback_url: "http://your-callback-url.com",
-            customization: {
-                title: selectedProduct.name,
-                description: selectedProduct.description,
-                logo: "https://your-logo-url.com/logo.png",
-            },
+        // Add to cart
+        axios.post('http://127.0.0.1:8000/api/cart/add', cartItem, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        .then(() => {
+            // Redirect to checkout
+            window.location.href = '/checkout';
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
         });
     };
 
@@ -155,41 +143,69 @@ const Products = () => {
 
             <div className="products-grid">
                 {loading ? (
-                    <p>Loading products...</p>
+                    <div className="loading-container">
+                        <p>Loading products...</p>
+                    </div>
                 ) : error ? (
-                    <p>{error}</p>
+                    <div className="error-container">
+                        <p className="error-message">{error}</p>
+                        <button className="reload-button" onClick={() => window.location.reload()}>
+                            Reload Page
+                        </button>
+                    </div>
                 ) : (
-                    filteredProducts.length > 0 ? (
-                        filteredProducts.map((product) => (
-                            <div key={product.id} className="product-card" onClick={() => handleProductSelect(product)}>
-                                <img src={`http://127.0.0.1:8000/storage/${product.image}`} alt={product.name} />
+                    filteredProducts.map((product) => (
+                        <div 
+                            key={product.id} 
+                            className="product-card"
+                            onClick={() => handleProductSelect(product)}
+                        >
+                            <div className="product-image-container">
+                                <img 
+                                    src={`http://127.0.0.1:8000/${product.image}`}
+                                    alt={product.name}
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = 'https://via.placeholder.com/150?text=Product+Image';
+                                    }}
+                                />
+                            </div>
+                            <div className="product-details">
                                 <h2>{product.name}</h2>
                                 <p className="product-price">${parseFloat(product.price).toFixed(2)}</p>
                             </div>
-                        ))
-                    ) : (
-                        <p>No products found</p>
-                    )
+                        </div>
+                    ))
                 )}
             </div>
 
             {selectedProduct && (
-                <div className="product-popup">
+                <div className={`product-popup ${selectedProduct ? 'active' : ''}`}>
                     <div className="popup-content">
-                        <span className="close-popup" onClick={handleClosePopup}>&times;</span>
-                        <img src={`http://127.0.0.1:8000/storage/${selectedProduct.image}`} alt={selectedProduct.name} />
+                        <span className="close-popup" onClick={() => setSelectedProduct(null)}>&times;</span>
+                        <img 
+                            src={`http://127.0.0.1:8000/${selectedProduct.image}`}
+                            alt={selectedProduct.name}
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = 'https://via.placeholder.com/300?text=Product+Image';
+                            }}
+                        />
                         <h2>{selectedProduct.name}</h2>
                         <p>{selectedProduct.description}</p>
                         <p className="product-price">${parseFloat(selectedProduct.price).toFixed(2)}</p>
                         <div className="product-buttons">
-                            <button className="add-to-cart-button" onClick={handleAddToCart}>
-                                Add to Cart
-                            </button>
-                            <button className="buy-button" onClick={handleBuyNow}>Buy</button>
+                            <AddToCartButton product={selectedProduct} />
                         </div>
                     </div>
                 </div>
             )}
+            
+            <LoginModal 
+                isOpen={showLoginModal}
+                onClose={() => setShowLoginModal(false)}
+                showMessage={() => {}}
+            />
         </div>
     );
 };

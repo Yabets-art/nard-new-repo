@@ -358,3 +358,68 @@
   height: 4px;
   background-color: #333;
 }
+
+/* Login section styling */
+.login-section {
+  display: flex;
+  align-items: center;
+}
+
+.login-btn {
+  background-color: #4a6741;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #5a7a51;
+}
+
+/* Cart Icon Styles */
+.cart-icon-container {
+  margin-right: 20px;
+  position: relative;
+}
+
+.cart-icon-link {
+  color: #4a6741;
+  font-size: 1.2rem;
+  position: relative;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.cart-nav-link {
+  position: relative;
+}
+
+.cart-nav-link .cart-badge {
+  top: -5px;
+  right: -12px;
+}
