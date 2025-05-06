@@ -3,44 +3,43 @@
   display: inline-block;
   will-change: transform;
   width: 100%;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.add-to-cart-button, .buy-now-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .add-to-cart-button {
-  background-color: #4a6741;
+  background-color: #4caf50;
   color: white;
-  border: none;
-  padding: 0.85rem 1.75rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  font-size: 1rem;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  letter-spacing: 0.02em;
 }
 
 .add-to-cart-button:hover {
-  background-color: #5a7a51;
-  transform: translateY(-2px) translateZ(0);
-  box-shadow: 0 3px 10px rgba(74, 103, 65, 0.3);
+  background-color: #45a049;
 }
 
-.add-to-cart-button:active {
-  transform: translateY(0) translateZ(0);
-  box-shadow: 0 1px 5px rgba(74, 103, 65, 0.2);
+.buy-now-button {
+  background-color: #f57c00;
+  color: white;
+  margin-left: 10px;
 }
 
-.add-to-cart-button:disabled {
+.buy-now-button:hover {
+  background-color: #e65100;
+}
+
+.add-to-cart-button:disabled, .buy-now-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
 }
 
 .cart-message {
@@ -58,6 +57,8 @@
   z-index: 10;
   transform-origin: center;
   will-change: transform, opacity;
+  margin-left: 10px;
+  animation: fadeIn 0.3s ease;
 }
 
 .cart-message.success {
@@ -80,5 +81,24 @@
   to {
     opacity: 1;
     transform: translate(-50%, 0) scale(1);
+  }
+}
+
+/* Make the buttons responsive */
+@media (max-width: 600px) {
+  .add-to-cart-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .buy-now-button {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+  
+  .cart-message {
+    margin-left: 0;
+    margin-top: 10px;
+    text-align: center;
   }
 } 
