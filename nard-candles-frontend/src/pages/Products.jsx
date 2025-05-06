@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import AddToCartButton from '../components/AddToCartButton';
+import BuyNowButton from '../components/BuyNowButton';
 import LoginModal from '../components/auth/LoginModal';
 import './Products.css';
 
@@ -197,6 +198,7 @@ const Products = () => {
                         <p className="product-price">${parseFloat(selectedProduct.price).toFixed(2)}</p>
                         <div className="product-buttons">
                             <AddToCartButton product={selectedProduct} />
+                            <BuyNowButton product={selectedProduct} />
                         </div>
                     </div>
                 </div>

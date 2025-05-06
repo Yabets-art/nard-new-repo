@@ -1,6 +1,6 @@
 // src/pages/MyCart.jsx
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PaymentDebug from '../components/PaymentDebug';
 import './MyCart.css';
@@ -16,6 +16,7 @@ const MyCart = () => {
     
     const { isAuthenticated, user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     // Fetch cart items
     useEffect(() => {
@@ -23,6 +24,17 @@ const MyCart = () => {
             fetchCartItems();
         }
     }, [isAuthenticated]);
+
+    // Check if we should proceed to payment automatically (when coming from Buy Now)
+    useEffect(() => {
+        if (location.state?.proceedToPayment && cartItems.length > 0 && !isLoading) {
+            // A longer delay to ensure UI is rendered before proceeding
+            const timer = setTimeout(() => {
+                initiatePayment();
+            }, 1500);
+            return () => clearTimeout(timer);
+        }
+    }, [location.state, cartItems, isLoading]);
 
     // Calculate total whenever cart items change
     useEffect(() => {
@@ -222,28 +234,57 @@ const MyCart = () => {
             }));
             
             if (data.success) {
-                setCheckoutStatus('Payment initiated! Redirecting to payment gateway...');
+                setCheckoutStatus('Payment initiated! Opening payment gateway...');
                 
                 // Store the transaction reference for later lookup
                 localStorage.setItem('last_payment_tx_ref', data.tx_ref);
                 localStorage.setItem('current_tx_ref', data.tx_ref);
                 
-                // Check if we need to open in a new tab
+                // Get the payment URL
                 const paymentUrl = data.payment_url;
                 
-                // Open the Chapa payment page in a new tab
+                // Use window.open for direct user activation which is more reliable
                 const paymentTab = window.open(paymentUrl, '_blank');
                 
-                // If popup was blocked, fall back to the current tab
                 if (!paymentTab || paymentTab.closed || typeof paymentTab.closed === 'undefined') {
-                    setCheckoutStatus('Payment popup was blocked. Redirecting in current tab...');
-                    window.location.href = paymentUrl;
+                    // If direct window.open failed (blocked), create a direct link for the user to click
+                    setCheckoutStatus('Please click the button below to open the payment page:');
+                    
+                    // Create a clickable link for the user
+                    const paymentLinkContainer = document.createElement('div');
+                    paymentLinkContainer.style.margin = '20px auto';
+                    paymentLinkContainer.style.textAlign = 'center';
+                    
+                    const paymentButton = document.createElement('a');
+                    paymentButton.href = paymentUrl;
+                    paymentButton.target = '_blank';
+                    paymentButton.rel = 'noopener noreferrer';
+                    paymentButton.textContent = 'Open Payment Gateway';
+                    paymentButton.style.padding = '10px 20px';
+                    paymentButton.style.backgroundColor = '#f57c00';
+                    paymentButton.style.color = 'white';
+                    paymentButton.style.borderRadius = '4px';
+                    paymentButton.style.textDecoration = 'none';
+                    paymentButton.style.fontWeight = 'bold';
+                    paymentButton.style.display = 'inline-block';
+                    
+                    paymentLinkContainer.appendChild(paymentButton);
+                    
+                    // Find the checkout status element and append the button after it
+                    setTimeout(() => {
+                        const statusElement = document.querySelector('.checkout-status');
+                        if (statusElement) {
+                            statusElement.appendChild(paymentLinkContainer);
+                        }
+                    }, 100);
                 } else {
-                    // Redirect main window to the orders page
-                    setCheckoutStatus('Payment initiated! Please check the new tab for the payment page.');
+                    // Payment tab was successfully opened
+                    setCheckoutStatus('Payment page opened in a new tab. You can continue shopping while completing your payment.');
+                    
+                    // Only redirect to orders page after a longer delay to allow user to see the message
                     setTimeout(() => {
                         navigate('/my-orders');
-                    }, 3000);
+                    }, 5000);
                 }
             } else {
                 setCheckoutStatus(`Payment failed: ${data.error || 'Unknown error'}`);
@@ -434,7 +475,15 @@ const MyCart = () => {
                                 serverResponse: data
                             }));
                             
-                            alert(`Direct payment test: ${response.ok ? 'Success' : 'Failed'} - see console`);
+                            // If payment was successfully initiated, open the payment URL in a new tab
+                            if (data.success && data.payment_url) {
+                                alert('Payment test successful - opening payment page in a new tab');
+                                
+                                // Use window.open for direct user activation
+                                window.open(data.payment_url, '_blank');
+                            } else {
+                                alert(`Direct payment test: ${response.ok ? 'Success' : 'Failed'} - see console`);
+                            }
                         } catch (e) {
                             console.error('[DEBUG] Failed to parse response');
                             alert('Direct payment test failed - invalid JSON response');

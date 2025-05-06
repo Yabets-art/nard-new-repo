@@ -259,8 +259,9 @@ const MyOrders = () => {
             receiptDetails.phone = receiptData.phone_number || user?.phone_number || 'N/A';
         }
         
-        // Create a simple receipt page with transaction details
+        // Create the receipt HTML content
         const receiptHTML = `
+            <!DOCTYPE html>
             <html>
             <head>
                 <title>Nard Candles - Payment Receipt</title>
@@ -512,13 +513,30 @@ const MyOrders = () => {
             </html>
         `;
         
-        // Open a new window with the receipt
-        const receiptWindow = window.open('', '_blank');
-        if (receiptWindow) {
-            receiptWindow.document.write(receiptHTML);
-            receiptWindow.document.close();
-        } else {
-            alert('Popup blocked. Please allow popups and try again.');
+        // Use a more reliable method to open in a new tab without being blocked
+        try {
+            // Create a Blob containing the HTML content
+            const blob = new Blob([receiptHTML], { type: 'text/html' });
+            
+            // Create an object URL for the blob
+            const blobUrl = URL.createObjectURL(blob);
+            
+            // Create an anchor element to open in new tab
+            const receiptLink = document.createElement('a');
+            receiptLink.href = blobUrl;
+            receiptLink.target = '_blank';
+            receiptLink.rel = 'noopener noreferrer';
+            document.body.appendChild(receiptLink);
+            receiptLink.click();
+            
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(receiptLink);
+                URL.revokeObjectURL(blobUrl);
+            }, 100);
+        } catch (error) {
+            console.error('Error opening receipt:', error);
+            alert('Failed to open the receipt. Please try again.');
         }
     };
 
