@@ -31,7 +31,7 @@ function App() {
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/my-cart" element={<MyCart />} />
-        <Route path="/register" element={<RegistrationPage />} />
+        <Route path="/training-register" element={<RegistrationPage />} />
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
