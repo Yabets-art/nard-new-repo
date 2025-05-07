@@ -73,20 +73,21 @@ function closeModal() {
 
 function editVideo(id) {
     $.ajax({
-        url: `/admin/youtube-videos/${id}`, // Ensure this route matches your web.php or API route
-        method: 'GET',
+        url: `/admin/youtube-videos/${id}`,  // Correct URL pattern
+        method: 'GET',  // Ensure GET request is sent
         success: function(video) {
             $('#videoModalLabel').text('Edit Video');
-            $('#videoForm').attr('action', `/admin/youtube-videos/update/${id}`); // Update the form action to the update route
-            $('#videoLink').val(video.link); // Set YouTube link value
-            $('#videoDescription').val(video.description); // Set description value
-            $('#videoModal').modal('show'); // Show the modal
+            $('#videoForm').attr('action', `/admin/youtube-videos/${id}`);  // Correct form action
+            $('#videoLink').val(video.link);  // Set the YouTube video link
+            $('#videoDescription').val(video.description);  // Set the description
+            $('#videoModal').modal('show');  // Show the modal
         },
         error: function(error) {
-            console.error('Error fetching video data:', error); // Add error handling
+            console.error('Error fetching video data:', error);  // Add error handling
         }
     });
 }
+
 
 
 function deleteVideo(id) {

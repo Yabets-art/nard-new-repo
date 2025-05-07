@@ -61,7 +61,17 @@ public function update(Request $request, $id)
     
         return response()->json(['message' => 'Video deleted successfully!']);
     }
-
+    public function show($id)
+    {
+        $video = YouTubeVideo::find($id);
+    
+        if (!$video) {
+            return response()->json(['message' => 'Video not found'], 404);
+        }
+    
+        return response()->json($video);
+    }
+    
     // Fetch all YouTube videos as JSON for the API
     public function youtube_videos()
 {

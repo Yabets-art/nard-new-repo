@@ -82,13 +82,14 @@
 <!-- Custom CSS -->
 <style>
     .sidebar {
-        width: 250px;
-        height: 100vh;
-        position: fixed;
+        width: 200px;
+        height: 110vh;
+        /* position: fixed;  */
         top: 0;
         left: 0;
+        
         background: linear-gradient(180deg, #4e73df, #224abe);
-        overflow-y: auto;
+        /* overflow-y: auto; */
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
     }
 

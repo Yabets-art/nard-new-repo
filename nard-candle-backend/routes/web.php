@@ -68,6 +68,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('featured_products', FeaturedProductController::class);
     Route::resource('youtube_videos', YouTubeVideoController::class);
 
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::resource('featured-products', FeaturedProductController::class);
+    });
+    
     // Promotion routes
     Route::get('/admin/promotions', [PromotionController::class, 'index'])->name('admin.promotions.index');
     Route::post('/admin/promotions', [PromotionController::class, 'store'])->name('admin.promotions.store');
@@ -90,6 +94,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/youtube-videos/{youtubeVideo}', [YouTubeVideoController::class, 'update'])->name('admin.youtube-videos.update');
     Route::delete('/admin/youtube-videos/{youtubeVideo}', [YouTubeVideoController::class, 'destroy'])->name('admin.youtube-videos.destroy');
     Route::post('/admin/videos/store', [YouTubeVideoController::class, 'store'])->name('admin.videos.store');
+
+    Route::get('/admin/youtube-videos/{youtubeVideo}', [YouTubeVideoController::class, 'show'])->name('admin.youtube-videos.show');
 
 
     // Post management routes
