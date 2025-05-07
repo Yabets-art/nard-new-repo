@@ -214,3 +214,9 @@ Route::middleware('auth:sanctum')->post('/test-email-validation', [EmailValidati
 
 // Add test route at the end of the file
 Route::get('/test-order-creation', 'App\Http\Controllers\TestController@testOrderCreation');
+
+// Add this route to handle updating order status
+Route::middleware('auth:sanctum')->post('/orders/{id}/complete', [OrderController::class, 'markAsCompleted']);
+
+// Add this route to get a specific order
+Route::middleware('auth:sanctum')->get('/orders/{id}', [OrderController::class, 'show']);
