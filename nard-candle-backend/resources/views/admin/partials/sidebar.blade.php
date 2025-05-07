@@ -38,7 +38,7 @@
             <div id="collapseOrder" class="collapse" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Order Options:</h6>
-                    <a class="collapse-item" href="#">Checkin</a>
+                    <a class="collapse-item" href="{{ route('admin.checkin') }}">Checkin</a>
                     <a class="collapse-item" href="{{ route('custom-orders.index') }}">Custom Order</a>
                 </div>
             </div>

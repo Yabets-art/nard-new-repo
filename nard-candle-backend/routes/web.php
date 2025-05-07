@@ -15,6 +15,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Middleware\VerifyCsrfToken;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use App\Http\Controllers\TrainersController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/order', function () {
         return view('admin.order');
     })->name('admin.order');
+
+    Route::get('/admin/checkin', [OrderController::class, 'checkin'])->name('admin.checkin');
 
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('product', [ProductController::class, 'index'])->name('product');
