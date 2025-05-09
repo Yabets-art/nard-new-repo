@@ -15,6 +15,8 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Middleware\VerifyCsrfToken;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use App\Http\Controllers\TrainersController;
+use App\Http\Controllers\OrderController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +29,10 @@ use App\Http\Controllers\TrainersController;
 |
 */
 
+use App\Http\Controllers\TopbarController;
+Route::get('/admin/topbar', [TopbarController::class, 'getNavbarAlerts'])->name('alerts.index');
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -37,6 +43,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/order', function () {
         return view('admin.order');
     })->name('admin.order');
+
+    Route::get('/admin/checkin', [OrderController::class, 'checkin'])->name('admin.checkin');
 
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('product', [ProductController::class, 'index'])->name('product');
@@ -116,6 +124,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/payment/confirm', [WebPaymentController::class, 'confirmPayment'])->name('payment.confirm');
     });
 });
+
+Route::get('/admin/messages/{message}', [MessageController::class, 'show'])->name('messages.show');
 
 // Temporary admin access route (REMOVE THIS IN PRODUCTION)
 Route::get('/force-admin-access', function () {

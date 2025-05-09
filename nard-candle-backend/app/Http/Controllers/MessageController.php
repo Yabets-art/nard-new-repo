@@ -34,5 +34,6 @@ class MessageController extends Controller
     {
         $message = Message::findOrFail($id);
         return view('admin.message-detail', compact('message'));
+        
     }
 }

@@ -31,15 +31,15 @@ class OrderController extends Controller
         
         // Try to find orders by user ID first
         $orders = Order::where('user_id', $user->id)
-                      ->orderBy('created_at', 'desc')
-                      ->get();
-                      
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                    
         // If no orders found by user ID, try email as fallback
         if ($orders->isEmpty() && $user->email) {
             $orders = Order::where('customer_email', $user->email)
-                          ->orderBy('created_at', 'desc')
-                          ->get();
-                          
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                        
             // Update user_id on these orders to properly associate them
             foreach ($orders as $order) {
                 if (!$order->user_id || $order->user_id != $user->id) {
@@ -197,6 +197,62 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => $order->status === 'completed' ? 'Order marked as paid successfully' : 'Order status unchanged',
+            'order_id' => $order->id,
+            'status' => $order->status,
+            'paid_at' => $order->paid_at
+        ]);
+    }
+    
+    /**
+     * Display all orders in the admin checkin page
+     */
+    public function checkin()
+    {
+        // Fetch all orders from the database, newest first
+        $orders = Order::orderBy('created_at', 'desc')->get();
+        
+        // Return the view with the orders data
+        return view('admin.checkin', compact('orders'));
+    }
+
+    /**
+     * Mark an order as completed from the admin panel
+     */
+    public function markAsCompleted($id)
+    {
+        // Find the order
+        $order = Order::findOrFail($id);
+        
+        // Update the order status to completed
+        $order->status = 'completed';
+        
+        // Set paid_at if not already set
+        if (!$order->paid_at) {
+            $order->paid_at = now();
+        }
+        
+        $order->save();
+        
+        // Log the status update
+        \Illuminate\Support\Facades\Log::info("Order {$order->id} status updated to 'completed' by admin", [
+            'admin_id' => auth()->id(),
+            'admin_email' => auth()->user()->email
+        ]);
+        
+        // Send order confirmation email if not already sent
+        if (!$order->getOriginal('status') == 'completed') {
+            try {
+                Mail::to($order->customer_email)->send(new OrderPaidMail($order));
+            } catch (\Exception $e) {
+                // Log email sending failure but don't fail the request
+                \Illuminate\Support\Facades\Log::error('Failed to send order confirmation email: ' . $e->getMessage());
+            }
+        }
+        
+        // Return success response
+        return response()->json([
+            'success' => true,
+            'message' => 'Order marked as completed successfully',
             'order_id' => $order->id,
             'status' => $order->status,
             'paid_at' => $order->paid_at
