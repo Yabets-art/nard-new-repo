@@ -17,6 +17,7 @@ use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use App\Http\Controllers\TrainersController;
 use App\Http\Controllers\OrderController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,6 +28,10 @@ use App\Http\Controllers\OrderController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+use App\Http\Controllers\TopbarController;
+Route::get('/admin/topbar', [TopbarController::class, 'getNavbarAlerts'])->name('alerts.index');
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -71,6 +76,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('featured_products', FeaturedProductController::class);
     Route::resource('youtube_videos', YouTubeVideoController::class);
 
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::resource('featured-products', FeaturedProductController::class);
+    });
+    
     // Promotion routes
     Route::get('/admin/promotions', [PromotionController::class, 'index'])->name('admin.promotions.index');
     Route::post('/admin/promotions', [PromotionController::class, 'store'])->name('admin.promotions.store');
@@ -94,6 +103,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/admin/youtube-videos/{youtubeVideo}', [YouTubeVideoController::class, 'destroy'])->name('admin.youtube-videos.destroy');
     Route::post('/admin/videos/store', [YouTubeVideoController::class, 'store'])->name('admin.videos.store');
 
+    Route::get('/admin/youtube-videos/{youtubeVideo}', [YouTubeVideoController::class, 'show'])->name('admin.youtube-videos.show');
+
 
     // Post management routes
     Route::get('/admin/post', [PostController::class, 'index'])->name('admin.post');
@@ -113,6 +124,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/payment/confirm', [WebPaymentController::class, 'confirmPayment'])->name('payment.confirm');
     });
 });
+
+Route::get('/admin/messages/{message}', [MessageController::class, 'show'])->name('messages.show');
 
 // Temporary admin access route (REMOVE THIS IN PRODUCTION)
 Route::get('/force-admin-access', function () {

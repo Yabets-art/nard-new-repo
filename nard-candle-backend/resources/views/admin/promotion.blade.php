@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Manage Promotion Banner</h1>
+    <h1 class="mb-4">Manage Promotion Banner</h1>
 
     <div class="promotion-banner-header mb-4">
         <button class="btn btn-warning" data-toggle="modal" data-target="#addPromotionModal">
@@ -10,30 +10,34 @@
         </button>
     </div>
 
-    <div class="promotion-banner-list">
+    <div class="row">
         @foreach($promotions as $promotion)
-            <div class="promotion-item">
-                @if(Str::contains($promotion->media, ['.jpg', '.jpeg', '.png']))
-                    <img src="{{ asset('storage/' . $promotion->media) }}" alt="{{ $promotion->title }}" class="promotion-image">
-                @elseif(Str::contains($promotion->media, ['.mp4', '.mov', '.avi']))
-                    <video controls class="promotion-video">
-                        <source src="{{ asset('storage/' . $promotion->media) }}" type="video/{{ pathinfo($promotion->media, PATHINFO_EXTENSION) }}">
-                        Your browser does not support the video tag.
-                    </video>
-                @endif
-                <div class="promotion-details">
-                    <h3>{{ $promotion->title }}</h3>
-                    <p>{{ $promotion->description }}</p>
-                    <label>Status: 
-                        <input type="checkbox" {{ $promotion->is_selected ? 'checked' : '' }} onclick="toggleStatus({{ $promotion->id }})">
-                        Selected
-                    </label>
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4">
+                    @if(Str::endsWith($promotion->media, ['.jpg', '.jpeg', '.png']))
+                        <img src="{{ asset('storage/' . $promotion->media) }}" alt="{{ $promotion->title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    @elseif(Str::endsWith($promotion->media, ['.mp4', '.mov', '.avi']))
+                        <video controls class="card-img-top" style="height: 200px; object-fit: cover;">
+                            <source src="{{ asset('storage/' . $promotion->media) }}" type="video/{{ pathinfo($promotion->media, PATHINFO_EXTENSION) }}">
+                            Your browser does not support the video tag.
+                        </video>
+                    @else
+                        <img src="{{ asset('images/default-placeholder.png') }}" class="card-img-top" alt="No media">
+                    @endif
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $promotion->title }}</h5>
+                        <p class="card-text">{{ $promotion->description }}</p>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="promotionCheck{{ $promotion->id }}" {{ $promotion->is_selected ? 'checked' : '' }} onclick="toggleStatus({{ $promotion->id }})">
+                            <label class="form-check-label" for="promotionCheck{{ $promotion->id }}">Selected</label>
+                        </div>
+                        <button class="btn btn-danger mt-3" onclick="deletePromotion({{ $promotion->id }})">Delete</button>
+                    </div>
                 </div>
-                <button class="btn btn-danger" onclick="deletePromotion({{ $promotion->id }})">Delete</button>
             </div>
         @endforeach
     </div>
-    
 
     <!-- Modal for adding new promotion -->
     <div class="modal fade" id="addPromotionModal" tabindex="-1" role="dialog" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
@@ -75,18 +79,20 @@
 
 <script>
     function toggleStatus(id) {
-        fetch(`/admin/promotions/${id}/toggle`, {
+        fetch(`{{ url('admin/promotions') }}/${id}/toggle`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
-            body: JSON.stringify({ /* data to update status */ })
+            body: JSON.stringify({})
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 alert('Status updated successfully!');
+            } else {
+                alert('Failed to update status.');
             }
         })
         .catch(error => console.error('Error:', error));
@@ -94,7 +100,7 @@
 
     function deletePromotion(id) {
         if (confirm('Are you sure you want to delete this promotion?')) {
-            fetch(`/admin/promotions/${id}`, {
+            fetch(`{{ url('admin/promotions') }}/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,12 +112,12 @@
                 if (data.success) {
                     location.reload();
                     alert('Promotion deleted successfully!');
+                } else {
+                    alert('Failed to delete promotion.');
                 }
             })
             .catch(error => console.error('Error:', error));
         }
     }
 </script>
-
 @endsection
-

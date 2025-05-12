@@ -31,15 +31,15 @@ class OrderController extends Controller
         
         // Try to find orders by user ID first
         $orders = Order::where('user_id', $user->id)
-                      ->orderBy('created_at', 'desc')
-                      ->get();
-                      
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                    
         // If no orders found by user ID, try email as fallback
         if ($orders->isEmpty() && $user->email) {
             $orders = Order::where('customer_email', $user->email)
-                          ->orderBy('created_at', 'desc')
-                          ->get();
-                          
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                        
             // Update user_id on these orders to properly associate them
             foreach ($orders as $order) {
                 if (!$order->user_id || $order->user_id != $user->id) {

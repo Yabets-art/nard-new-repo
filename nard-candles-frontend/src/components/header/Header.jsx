@@ -138,12 +138,12 @@ const Header = ({ cartProducts = [] }) => {
           </nav>
 
           {/* Cart Icon (visible on desktop) */}
-          <div className="cart-icon-container">
+          {/* <div className="cart-icon-container">
             <Link to="/my-cart" className="cart-icon-link">
               <FontAwesomeIcon icon={faShoppingCart} />
               {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
             </Link>
-          </div>
+          </div> */}
 
           {/* Profile Section - Show only when authenticated */}
           {isAuthenticated ? (

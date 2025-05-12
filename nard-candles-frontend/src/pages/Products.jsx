@@ -188,10 +188,6 @@ const Products = () => {
                         <img 
                             src={`http://127.0.0.1:8000/${selectedProduct.image}`}
                             alt={selectedProduct.name}
-                            onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = 'https://via.placeholder.com/300?text=Product+Image';
-                            }}
                         />
                         <h2>{selectedProduct.name}</h2>
                         <p>{selectedProduct.description}</p>
@@ -202,13 +198,13 @@ const Products = () => {
                         </div>
                     </div>
                 </div>
-            )}
+                                )}
             
             <LoginModal 
                 isOpen={showLoginModal}
                 onClose={() => setShowLoginModal(false)}
                 showMessage={() => {}}
-            />
+            />d
         </div>
     );
 };
