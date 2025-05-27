@@ -84,7 +84,7 @@
     .sidebar {
         width: 200px;
         height: 110vh;
-        /* position: fixed;  */
+        position: fixed;
         top: 0;
         left: 0;
         

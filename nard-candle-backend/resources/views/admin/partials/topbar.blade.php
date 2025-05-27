@@ -7,42 +7,6 @@
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
 
-        <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
-                <!-- Counter - Alerts -->
-                <span class="badge badge-danger badge-counter">{{ $recentAlerts->count() }}</span>
-            </a>
-        
-            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                 aria-labelledby="alertsDropdown">
-                <h6 class="dropdown-header">Alerts Center</h6>
-        
-                @forelse ($recentAlerts as $alert)
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                        <div class="mr-3">
-                            <div class="icon-circle bg-{{ $alert->type }}">
-                                <i class="{{ $alert->icon }} text-white"></i>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="small text-gray-500">{{ $alert->created_at->format('F d, Y') }}</div>
-                            @if ($alert->title)
-                                <span class="font-weight-bold">{{ $alert->title }}</span><br>
-                            @endif
-                            {{ $alert->message }}
-                        </div>
-                    </a>
-                @empty
-                    <div class="dropdown-item text-center small text-gray-500">No recent alerts</div>
-                @endforelse
-        
-                <a class="dropdown-item text-center small text-gray-500" href="{{ route('alerts.index') }}">
-                    Show All Alerts
-                </a>
-            </div>
-        </li>
         
 
         <!-- Nav Item - Messages -->
