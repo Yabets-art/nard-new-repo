@@ -23,14 +23,24 @@
 
 .close-button {
     position: absolute;
-    width:min-content;
-    top: 0rem;
-    right: 0rem;
-    background: none;
+    top: 10px;
+    right: 10px;
+    background: #4a6741;
+    color: white;
     border: none;
-    font-size: 1.5rem;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
     cursor: pointer;
-    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+    background-color: #5a7a51;
 }
 
 .modal-content h2 {

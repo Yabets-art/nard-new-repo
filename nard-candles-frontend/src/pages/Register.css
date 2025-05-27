@@ -1,116 +1,191 @@
 .register-container {
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 120px);
-    padding: 2rem;
-    background-color: #f9f9f9;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
 }
 
 .register-form {
-    background-color: white;
-    padding: 2rem;
+    background: white;
+    padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 500px;
 }
 
 .register-form h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 28px;
     text-align: center;
-    color: #333;
-    margin-bottom: 0.5rem;
 }
 
 .register-form p {
+    color: #7f8c8d;
+    margin-bottom: 30px;
     text-align: center;
-    color: #666;
-    margin-bottom: 2rem;
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 25px;
+    position: relative;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
-    color: #333;
+    margin-bottom: 8px;
+    color: #2c3e50;
     font-weight: 500;
 }
 
 .form-group input {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: all 0.3s ease;
 }
 
 .form-group input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
     outline: none;
-    border-color: #4a6741;
 }
 
-.error-input {
-    border-color: #dc3545 !important;
-    background-color: #fff8f8;
+/* Valid state */
+.form-group input.valid {
+    border-color: #2ecc71;
+}
+
+.form-group input.valid + .validation-icon::before {
+    content: '✓';
+    color: #2ecc71;
+}
+
+/* Error state */
+.form-group input.error {
+    border-color: #e74c3c;
+}
+
+.validation-icon {
+    position: absolute;
+    right: 12px;
+    top: 40px;
+    pointer-events: none;
 }
 
 .field-error {
-    color: #dc3545;
-    font-size: 0.85rem;
-    margin-top: 4px;
-    padding-left: 2px;
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    animation: slideIn 0.3s ease;
 }
 
-.error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    border-radius: 4px;
-    padding: 12px;
-    margin-bottom: 20px;
-    font-size: 14px;
+.field-error::before {
+    content: '⚠';
+    margin-right: 6px;
 }
 
 .register-button {
     width: 100%;
-    padding: 1rem;
-    background-color: #4a6741;
+    padding: 14px;
+    background: #3498db;
     color: white;
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
+    border-radius: 6px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background 0.3s ease;
 }
 
 .register-button:hover {
-    background-color: #5a7a51;
+    background: #2980b9;
 }
 
 .register-button:disabled {
-    background-color: #ccc;
+    background: #bdc3c7;
     cursor: not-allowed;
 }
 
 .login-link {
     text-align: center;
-    margin-top: 1.5rem;
-    color: #666;
+    margin-top: 20px;
+    color: #7f8c8d;
 }
 
 .login-link a {
-    color: #4a6741;
+    color: #3498db;
     text-decoration: none;
     font-weight: 500;
 }
 
 .login-link a:hover {
     text-decoration: underline;
+}
+
+.error-message {
+    background: #fdecea;
+    color: #e74c3c;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    animation: shake 0.5s ease;
+}
+
+.error-message::before {
+    content: '⚠';
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Password strength indicator */
+.password-strength {
+    height: 4px;
+    margin-top: 8px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.strength-weak {
+    background: #e74c3c;
+    width: 33%;
+}
+
+.strength-medium {
+    background: #f1c40f;
+    width: 66%;
+}
+
+.strength-strong {
+    background: #2ecc71;
+    width: 100%;
 }
 
 /* Responsive adjustments */

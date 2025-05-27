@@ -9,10 +9,12 @@ import mostSold6 from '../assets/mostSold6.jpg';
 import mostLiked1 from '../assets/mostLiked1.jpg';
 import mostLiked2 from '../assets/mostLiked2.jpg';
 import mostLiked3 from '../assets/mostLiked3.jpg';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import placeholderImage from '../assets/placeholder.svg';
+import axios from 'axios';
 
 const Home = () => {
+  const navigate = useNavigate();
   const [promotions, setPromotions] = useState([]);
   const [currentPromotion, setCurrentPromotion] = useState(0);
   const [featuredCandles, setFeaturedCandles] = useState([]);
@@ -38,16 +40,22 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        console.log('Fetching featured products from:', `${baseURL}api/featured_products`);
-        const response = await fetch(`${baseURL}api/featured_products`);
+        const response = await axios.get(`${baseURL}api/products`);
         
-        if (!response.ok) {
-          throw new Error(`Failed to fetch featured products: ${response.status} ${response.statusText}`);
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          // Get first 4 products as featured items
+          const processedProducts = response.data.slice(0, 4).map(product => {
+            let imagePath = product.image;
+            if (imagePath === 'images/mostSold1.jpg' || imagePath === 'images/mostliked3.jpg') {
+              imagePath = imagePath + '.jpg';
+            }
+            return {
+              ...product,
+              image: imagePath.startsWith('images/') ? imagePath : `images/${imagePath}`
+            };
+          });
+          setFeaturedCandles(processedProducts);
         }
-        
-        const data = await response.json();
-        console.log('Featured products data:', data);
-        setFeaturedCandles(data);
       } catch (error) {
         console.error('Error fetching featured products:', error);
       }
@@ -120,162 +128,365 @@ const Home = () => {
     e.target.src = placeholderImage;
   };
 
+  const handleProductClick = () => {
+    navigate('/products');
+  };
+
+  useEffect(() => {
+    // Enhanced scroll animation observer with both directions
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        // Remove animate class when element is not in view
+        if (!entry.isIntersecting) {
+          entry.target.classList.remove('animate');
+          // Remove animation from children
+          const children = entry.target.querySelectorAll('.stagger-item');
+          children.forEach(child => {
+            child.classList.remove('animate');
+          });
+        } else {
+          // Add animation when element comes into view
+          entry.target.classList.add('animate');
+          // Add stagger effect for child elements
+          const children = entry.target.querySelectorAll('.stagger-item');
+          children.forEach((child, index) => {
+            setTimeout(() => {
+              child.classList.add('animate');
+            }, index * 200);
+          });
+        }
+      });
+    }, {
+      threshold: [0.1, 0.3], // Multiple thresholds for smoother triggering
+      rootMargin: '0px 0px -100px 0px' // Slightly offset the trigger point
+    });
+
+    // Observe all animated elements
+    document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right, .split-reveal, .slide-in, .gallery').forEach((element) => {
+      observer.observe(element);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="home-container">
-      {/* Hero Section */}
+      {/* Hero Section - Full Screen */}
       <section
-        className="promotion-background"
+        className="promotion-background split-reveal"
         style={{
           backgroundImage: currentPromo
             ? `url(${baseURL}storage/${currentPromo.media})`
             : 'none',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
         }}
       >
-        {currentPromo && (
-          <div className="hero">
-            <div className="hero-content">
-              <h1>Welcome to Nard Candles</h1>
-              <p>Bringing warmth and light into your home with our handcrafted, all-natural candles.</p>
-              <button className="cta-button">Shop Now</button>
-            </div>
+        <div className="hero">
+          <div className="hero-content stagger-item">
+            <h1>Welcome to Nard Candles</h1>
+            <p>Bringing warmth and light into your home with our handcrafted, all-natural candles.</p>
+            <button className="cta-button">Shop Now</button>
           </div>
-        )}
+        </div>
+        <div className="scroll-indicator stagger-item">
+          <div className="mouse"></div>
+          <p>Scroll to explore</p>
+        </div>
       </section>
 
-      {/* Featured Products */}
+      {/* Featured Products with Cloud Transition */}
       <section className="gallery">
-        <h2>Our Featured Candles</h2>
-        <div className="gallery-scroll">
-          {featuredCandles.map((candle) => (
-            <div key={candle.id} className="gallery-item">
-              <img 
-                src={`${baseURL}storage/${candle.image}`} 
-                alt={candle.name}
-                onError={(e) => handleImageError(e, `${baseURL}storage/${candle.image}`)}
-              />
-              <p>{candle.name}</p>
+        <div className="gallery-content">
+          <h2 className="stagger-item">Our Featured Candles</h2>
+          <div className="featured-products-container">
+            <div className="gallery-scroll">
+              {featuredCandles.map((candle) => (
+                <div 
+                  key={candle.id} 
+                  className="gallery-item stagger-item"
+                  onClick={handleProductClick}
+                >
+                  <div className="product-image-container">
+                    <img 
+                      src={`${baseURL}${candle.image}`} 
+                      alt={candle.name}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = placeholderImage;
+                      }}
+                    />
+                    <div className="product-overlay">
+                      <span className="view-details">View Details</span>
+                    </div>
+                  </div>
+                  <div className="product-details">
+                    <h3>{candle.name}</h3>
+                    <p className="product-price">${parseFloat(candle.price).toFixed(2)}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+            <div className="view-all-products">
+              <Link to="/products" className="view-all-button">
+                View All Products
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Video Section */}
-      <section style={styles.video}>
-        <h2>Discover Nard Candles</h2>
-        {videos.length > 0 ? (
-          <div style={styles.videoGallery}>
-            {videos.map((video) => {
-              let videoId;
-              try {
-                videoId = extractVideoId(video.link);
-              } catch (error) {
-                console.error('Error extracting video ID:', error, video);
-                videoId = null;
-              }
-              
-              return (
-                <div key={video.id} style={styles.videoItem}>
-                  {videoId ? (
-                    <iframe
-                      src={`https://www.youtube.com/embed/${videoId}`}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      width="100%"
-                      height="250"
-                      onError={(e) => {
-                        console.error('Iframe error:', e);
-                      }}
-                    ></iframe>
-                  ) : (
-                    <div style={{ 
-                      backgroundColor: '#f0f0f0', 
-                      height: '250px', 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center' 
-                    }}>
-                      <p>Video Unavailable</p>
+      <section className="discover-section split-reveal">
+        <div className="section-container">
+          <div className="discover-header stagger-item">
+            <h2>Discover Nard Candles</h2>
+            <p>Experience the art of candle making through our curated collection of videos</p>
+          </div>
+          
+          {videos.length > 0 ? (
+            <div className="discover-grid">
+              {videos.map((video, index) => {
+                let videoId;
+                try {
+                  videoId = extractVideoId(video.link);
+                } catch (error) {
+                  console.error('Error extracting video ID:', error, video);
+                  videoId = null;
+                }
+                
+                return (
+                  <div 
+                    key={video.id} 
+                    className={`discover-item stagger-item ${index % 2 === 0 ? 'fade-in-left' : 'fade-in-right'}`}
+                  >
+                    <div className="video-wrapper">
+                      <div className="video-container">
+                        {videoId ? (
+                          <iframe
+                            src={`https://www.youtube.com/embed/${videoId}`}
+                            title={video.title || 'Nard Candles Video'}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            loading="lazy"
+                          ></iframe>
+                        ) : (
+                          <div className="video-placeholder">
+                            <p>Video Unavailable</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  )}
-                  <p>{video.description}</p>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="no-videos-message">
-            <p>No videos available at the moment. Please check back later.</p>
-          </div>
-        )}
-      </section>
-
-      {/* Most Sold of the Week */}
-      <section className="most-sold">
-        <h2>Most Sold of the Week</h2>
-        <div className="most-sold-gallery">
-          {[mostSold1, mostSold2, mostSold3, mostSold4, mostSold5, mostSold6].map((image, index) => (
-            <div key={index} className="most-sold-item">
-              <img src={image} alt={`Most Sold ${index + 1}`} />
-              <p>Product {index + 1} - {Math.floor(Math.random() * 150)} Orders</p>
+                    <div className="video-details">
+                      <h3>{video.title || 'Nard Candles Creation'}</h3>
+                      <p>{video.description}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
+          ) : (
+            <div className="no-videos-message stagger-item">
+              <div className="message-content">
+                <i className="video-icon">🎥</i>
+                <p>No videos available at the moment. Please check back later.</p>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Most Liked Candle Product Section */}
-      <section className="most-liked">
-        <h2>Most Liked Candle Product</h2>
-        <div className="most-liked-gallery">
-          {[mostLiked1, mostLiked2, mostLiked3].map((image, index) => (
-            <div key={index} className="most-liked-item">
-              <img src={image} alt={`Most Liked ${index + 1}`} />
-              <p>Product {index + 1} - <span className="likes"><i className="fa fa-heart"></i> {Math.floor(Math.random() * 200)} Likes</span></p>
+      {/* Custom Order Section */}
+      <section className="custom-order-section split-reveal">
+        <div className="section-container">
+          <div className="custom-order-content">
+            <div className="custom-order-text stagger-item">
+              <h2>Create Your Perfect Candle</h2>
+              <p>Want something unique? Design your own custom candle with our personalized service.</p>
+              <ul className="custom-features">
+                <li className="stagger-item">
+                  <span className="feature-icon">🎨</span>
+                  Choose Your Colors
+                </li>
+                <li className="stagger-item">
+                  <span className="feature-icon">🌺</span>
+                  Select Your Scent
+                </li>
+                <li className="stagger-item">
+                  <span className="feature-icon">🎁</span>
+                  Custom Packaging
+                </li>
+                <li className="stagger-item">
+                  <span className="feature-icon">✨</span>
+                  Add Special Decorations
+                </li>
+              </ul>
+              <Link to="/custom-order" className="custom-order-button stagger-item">
+                Start Designing
+                <span className="button-arrow">→</span>
+              </Link>
             </div>
-          ))}
+            <div className="custom-order-image stagger-item">
+              <div className="image-container">
+                <div className="floating-elements">
+                  <div className="float-item candle-1"></div>
+                  <div className="float-item candle-2"></div>
+                  <div className="float-item flower-1">🌸</div>
+                  <div className="float-item flower-2">🌺</div>
+                  <div className="float-item star-1">✨</div>
+                  <div className="float-item star-2">✨</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Mission Statement Section */}
-      <section className="mission">
-        <h2>Our Mission</h2>
-        <p>
-          At Nard Candles, we believe in creating a calming and serene environment in every home.
-          Our mission is to provide high-quality, eco-friendly candles that elevate your space
-          and enhance your well-being.
-        </p>
+      <section className="mission-section split-reveal">
+        <div className="section-container">
+          <div className="mission-content">
+            <div className="mission-text stagger-item">
+              <h2>Our Mission</h2>
+              <div className="decorative-line"></div>
+              <p>
+                At Nard Candles, we believe in creating a calming and serene environment in every home.
+                Our mission is to provide high-quality, eco-friendly candles that elevate your space
+                and enhance your well-being.
+              </p>
+              <div className="mission-values">
+                <div className="value-item stagger-item">
+                  <span className="value-icon">🌿</span>
+                  <h3>Sustainability</h3>
+                  <p>Eco-friendly materials and processes</p>
+                </div>
+                <div className="value-item stagger-item">
+                  <span className="value-icon">💝</span>
+                  <h3>Quality</h3>
+                  <p>Premium ingredients and craftsmanship</p>
+                </div>
+                <div className="value-item stagger-item">
+                  <span className="value-icon">🏡</span>
+                  <h3>Comfort</h3>
+                  <p>Creating peaceful home environments</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Company History Section */}
-      <section className="history">
-        <h2>Our Story</h2>
-        <p>
-          Founded in 2020, Nard Candles began as a small passion project in a home kitchen.
-          Today, we have grown into a beloved brand known for our dedication to quality,
-          sustainability, and customer satisfaction.
-        </p>
+      <section className="story-section slide-in">
+        <div className="section-container">
+          <div className="story-content">
+            <div className="story-image stagger-item">
+              <div className="image-frame">
+                <div className="floating-elements">
+                  <div className="story-element candle-making"></div>
+                  <div className="story-element workshop"></div>
+                  <div className="story-element nature"></div>
+                </div>
+              </div>
+            </div>
+            <div className="story-text stagger-item">
+              <h2>Our Story</h2>
+              <div className="decorative-line"></div>
+              <div className="timeline">
+                <div className="timeline-item stagger-item">
+                  <span className="year">2020</span>
+                  <p>Founded as a small passion project in a home kitchen</p>
+                </div>
+                <div className="timeline-item stagger-item">
+                  <span className="year">2021</span>
+                  <p>Expanded to our first workshop</p>
+                </div>
+                <div className="timeline-item stagger-item">
+                  <span className="year">2022</span>
+                  <p>Launched our eco-friendly product line</p>
+                </div>
+                <div className="timeline-item stagger-item">
+                  <span className="year">2023</span>
+                  <p>Grew into a beloved brand known for quality and sustainability</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* Unique Selling Points Section */}
-      <section className="usp">
-        <h2>Why Choose Us?</h2>
-        <ul>
-          <li>100% Natural Ingredients</li>
-          <li>Handcrafted with Love</li>
-          <li>Eco-friendly Packaging</li>
-          <li>Wide Range of Scents</li>
-        </ul>
+      {/* USP Section */}
+      <section className="usp-section split-reveal">
+        <div className="section-container">
+          <h2 className="stagger-item">Why Choose Us?</h2>
+          <div className="decorative-line"></div>
+          <div className="usp-grid">
+            <div className="usp-item stagger-item">
+              <div className="usp-icon">
+                <span>🌿</span>
+              </div>
+              <h3>100% Natural Ingredients</h3>
+              <p>Pure, sustainable materials for a clean burn</p>
+              <div className="hover-info">
+                <ul>
+                  <li>Soy and beeswax blend</li>
+                  <li>Essential oil fragrances</li>
+                  <li>Cotton wicks</li>
+                </ul>
+              </div>
+            </div>
+            <div className="usp-item stagger-item">
+              <div className="usp-icon">
+                <span>🎨</span>
+              </div>
+              <h3>Handcrafted with Love</h3>
+              <p>Each candle is uniquely made with care</p>
+              <div className="hover-info">
+                <ul>
+                  <li>Small batch production</li>
+                  <li>Artisanal techniques</li>
+                  <li>Quality control</li>
+                </ul>
+              </div>
+            </div>
+            <div className="usp-item stagger-item">
+              <div className="usp-icon">
+                <span>♻️</span>
+              </div>
+              <h3>Eco-friendly Packaging</h3>
+              <p>Sustainable and recyclable materials</p>
+              <div className="hover-info">
+                <ul>
+                  <li>Recycled materials</li>
+                  <li>Minimal waste</li>
+                  <li>Reusable containers</li>
+                </ul>
+              </div>
+            </div>
+            <div className="usp-item stagger-item">
+              <div className="usp-icon">
+                <span>🌺</span>
+              </div>
+              <h3>Wide Range of Scents</h3>
+              <p>Something for every preference</p>
+              <div className="hover-info">
+                <ul>
+                  <li>Seasonal collections</li>
+                  <li>Classic fragrances</li>
+                  <li>Custom blends</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      
-  <Link to="/register">
-    <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-      Register for Training
-    </button>
-  </Link>
-
+      <div className="section-container">
+        <Link to="/register" className="register-link fade-in-up">
+          <button className="register-button stagger-item">
+            Register for Training
+          </button>
+        </Link>
+      </div>
     </div>
   );
 };
