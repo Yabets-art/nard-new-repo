@@ -15,10 +15,12 @@ const Products = () => {
     const [error, setError] = useState(null);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showLoginModal, setShowLoginModal] = useState(false);
+    // eslint-disable-next-line no-unused-vars
     const [loadedImages, setLoadedImages] = useState(new Set());
     
     const { isAuthenticated } = useAuth();
 
+    // eslint-disable-next-line no-unused-vars
     const handleImageLoad = useCallback((productId) => {
         setLoadedImages(prev => new Set([...prev, productId]));
     }, []);
@@ -39,7 +41,7 @@ const Products = () => {
                         }
                         return {
                             ...product,
-                            image: imagePath.startsWith('images/') ? imagePath : `images/${imagePath}`
+                            image: imagePath.startsWith('images/') ? imagePath : `${imagePath}`
                         };
                     });
                     setProducts(processedProducts);
@@ -88,6 +90,7 @@ const Products = () => {
         setSelectedProduct(product);
     };
 
+    // eslint-disable-next-line no-unused-vars
     const handleBuyNow = (product) => {
         if (!isAuthenticated) {
             setShowLoginModal(true);
@@ -166,10 +169,6 @@ const Products = () => {
                                 <img 
                                     src={`http://127.0.0.1:8000/${product.image}`}
                                     alt={product.name}
-                                    onError={(e) => {
-                                        e.target.onerror = null;
-                                        e.target.src = 'https://via.placeholder.com/150?text=Product+Image';
-                                    }}
                                 />
                             </div>
                             <div className="product-details">

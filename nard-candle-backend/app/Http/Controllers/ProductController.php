@@ -26,12 +26,13 @@ class ProductController extends Controller
         ]);
 
         $imagePath = $request->file('image')->store('products', 'public');
+        $fullPath = 'storage/' . $imagePath;
 
         Product::create([
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
-            'image' => $imagePath,
+            'image' => $fullPath,
             'category_id' => 1
         ]);
 
