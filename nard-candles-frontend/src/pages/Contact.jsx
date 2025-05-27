@@ -206,76 +206,76 @@ const Contact = () => {
               </div>
             )}
 
-            <div className="form-group">
+        <div className="form-group">
               <label htmlFor="name">
                 Full Name
                 <span className="required">*</span>
               </label>
-              <input
-                type="text"
-                id="name"
+          <input
+            type="text"
+            id="name"
                 className={getInputClassName('name')}
-                value={formData.name}
-                onChange={handleChange}
+            value={formData.name}
+            onChange={handleChange}
                 onBlur={() => handleBlur('name')}
                 placeholder="Enter your name"
-                required
-              />
+            required
+          />
               {touched.name && errors.name && (
                 <div className="error-message">{errors.name}</div>
               )}
-            </div>
+        </div>
 
-            <div className="form-group">
+        <div className="form-group">
               <label htmlFor="email">
                 Email Address
                 <span className="required">*</span>
               </label>
-              <input
-                type="email"
-                id="email"
+          <input
+            type="email"
+            id="email"
                 className={getInputClassName('email')}
-                value={formData.email}
-                onChange={handleChange}
+            value={formData.email}
+            onChange={handleChange}
                 onBlur={() => handleBlur('email')}
                 placeholder="Enter your email"
-                required
-              />
+            required
+          />
               {touched.email && errors.email && (
                 <div className="error-message">{errors.email}</div>
               )}
-            </div>
+        </div>
 
-            <div className="form-group">
+        <div className="form-group">
               <label htmlFor="phone">Phone Number</label>
-              <input
-                type="tel"
-                id="phone"
+          <input
+            type="tel"
+            id="phone"
                 className={getInputClassName('phone')}
-                value={formData.phone}
-                onChange={handleChange}
+            value={formData.phone}
+            onChange={handleChange}
                 onBlur={() => handleBlur('phone')}
                 placeholder="Enter your phone number"
-              />
+          />
               {touched.phone && errors.phone && (
                 <div className="error-message">{errors.phone}</div>
               )}
-            </div>
+        </div>
 
-            <div className="form-group">
+        <div className="form-group">
               <label htmlFor="message">
                 Message
                 <span className="required">*</span>
               </label>
-              <textarea
-                id="message"
+          <textarea
+            id="message"
                 className={getInputClassName('message')}
-                value={formData.message}
-                onChange={handleChange}
+            value={formData.message}
+            onChange={handleChange}
                 onBlur={() => handleBlur('message')}
                 placeholder="How can we help you?"
-                required
-              />
+            required
+          />
               {touched.message && errors.message && (
                 <div className="error-message">{errors.message}</div>
               )}

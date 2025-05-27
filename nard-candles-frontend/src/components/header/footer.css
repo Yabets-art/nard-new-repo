@@ -104,10 +104,13 @@
 }
 
 /* Contact Info Section */
+.footer-section.contact-info {
+  background: transparent;
+}
+
 .footer-section.contact-info a {
   color: #000000;
   text-decoration: none;
-  
 }
 
 .footer-section.contact-info a:hover {

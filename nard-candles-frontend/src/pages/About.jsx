@@ -3,6 +3,18 @@ import './About.css';
 
 const About = () => {
   const observerRef = useRef(null);
+  const missionRef = useRef(null);
+
+  useEffect(() => {
+    // Auto-scroll to mission section after a short delay
+    const timer = setTimeout(() => {
+      if (missionRef.current) {
+        missionRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 1000); // 1 second delay to allow for initial animations
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     observerRef.current = new IntersectionObserver((entries) => {
@@ -46,9 +58,9 @@ const About = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="mission-section animate-on-scroll slide-up">
+      <section ref={missionRef} className="mission-section animate-on-scroll slide-up">
         <div className="section-content">
-          <h2>Our Mission</h2>
+        <h2>Our Mission</h2>
           <div className="decorative-line"></div>
           <p>
             At Nard Candles, we believe that a well-crafted candle can do more than just provide light; 
@@ -126,7 +138,7 @@ const About = () => {
                 <li>Gift-ready</li>
                 <li>Event-specific</li>
                 <li>Home decor</li>
-              </ul>
+        </ul>
             </div>
           </div>
         </div>
@@ -171,7 +183,7 @@ const About = () => {
       {/* Sustainability Section */}
       <section className="sustainability-section animate-on-scroll slide-up">
         <div className="section-content">
-          <h2>Commitment to Sustainability</h2>
+        <h2>Commitment to Sustainability</h2>
           <div className="decorative-line"></div>
           <div className="sustainability-content">
             <div className="sustainability-text">

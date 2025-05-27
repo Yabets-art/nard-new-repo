@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './Home.css';
 import mostSold1 from '../assets/mostSold1.jpg';
 import mostSold2 from '../assets/mostSold2.jpg';
@@ -20,6 +20,7 @@ const Home = () => {
   const [featuredCandles, setFeaturedCandles] = useState([]);
   const [videos, setVideos] = useState([]);
   const baseURL = 'http://localhost:8000/';
+  const observerRef = useRef(null);
 
   useEffect(() => {
     fetch(`${baseURL}api/promotions`)
@@ -134,7 +135,7 @@ const Home = () => {
 
   useEffect(() => {
     // Enhanced scroll animation observer with both directions
-    const observer = new IntersectionObserver((entries) => {
+    observerRef.current = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         // Remove animate class when element is not in view
         if (!entry.isIntersecting) {
@@ -162,11 +163,15 @@ const Home = () => {
     });
 
     // Observe all animated elements
-    document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right, .split-reveal, .slide-in, .gallery').forEach((element) => {
-      observer.observe(element);
+    document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right, .split-reveal, .slide-in, .gallery, .stagger-item').forEach((element) => {
+      observerRef.current.observe(element);
     });
 
-    return () => observer.disconnect();
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
   }, []);
 
   return (
@@ -180,16 +185,15 @@ const Home = () => {
             : 'none',
         }}
       >
-        <div className="hero">
+          <div className="hero">
           <div className="hero-content stagger-item">
-            <h1>Welcome to Nard Candles</h1>
-            <p>Bringing warmth and light into your home with our handcrafted, all-natural candles.</p>
-            <button className="cta-button">Shop Now</button>
+            <h1 className="welcome-title">Welcome to Nard Candles</h1>
+            <p className="welcome-description">Bringing warmth and light into your home with our handcrafted, all-natural candles.</p>
+            <Link to="/products" className="cta-button">
+              Shop Now
+              <span className="button-glow"></span>
+            </Link>
           </div>
-        </div>
-        <div className="scroll-indicator stagger-item">
-          <div className="mouse"></div>
-          <p>Scroll to explore</p>
         </div>
       </section>
 
@@ -198,22 +202,22 @@ const Home = () => {
         <div className="gallery-content">
           <h2 className="stagger-item">Our Featured Candles</h2>
           <div className="featured-products-container">
-            <div className="gallery-scroll">
-              {featuredCandles.map((candle) => (
+        <div className="gallery-scroll">
+          {featuredCandles.map((candle) => (
                 <div 
                   key={candle.id} 
                   className="gallery-item stagger-item"
                   onClick={handleProductClick}
                 >
                   <div className="product-image-container">
-                    <img 
+              <img 
                       src={`${baseURL}${candle.image}`} 
-                      alt={candle.name}
-                      onError={(e) => {
-                        e.target.onerror = null;
+                alt={candle.name} 
+                onError={(e) => {
+                  e.target.onerror = null;
                         e.target.src = placeholderImage;
-                      }}
-                    />
+                }}
+              />
                     <div className="product-overlay">
                       <span className="view-details">View Details</span>
                     </div>
@@ -238,58 +242,58 @@ const Home = () => {
       <section className="discover-section split-reveal">
         <div className="section-container">
           <div className="discover-header stagger-item">
-            <h2>Discover Nard Candles</h2>
+        <h2>Discover Nard Candles</h2>
             <p>Experience the art of candle making through our curated collection of videos</p>
           </div>
           
-          {videos.length > 0 ? (
+        {videos.length > 0 ? (
             <div className="discover-grid">
               {videos.map((video, index) => {
-                let videoId;
-                try {
-                  videoId = extractVideoId(video.link);
-                } catch (error) {
-                  console.error('Error extracting video ID:', error, video);
-                  videoId = null;
-                }
-                
-                return (
+              let videoId;
+              try {
+                videoId = extractVideoId(video.link);
+              } catch (error) {
+                console.error('Error extracting video ID:', error, video);
+                videoId = null;
+              }
+              
+              return (
                   <div 
                     key={video.id} 
                     className={`discover-item stagger-item ${index % 2 === 0 ? 'fade-in-left' : 'fade-in-right'}`}
                   >
                     <div className="video-wrapper">
                       <div className="video-container">
-                        {videoId ? (
-                          <iframe
-                            src={`https://www.youtube.com/embed/${videoId}`}
+                  {videoId ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${videoId}`}
                             title={video.title || 'Nard Candles Video'}
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
                             loading="lazy"
-                          ></iframe>
-                        ) : (
+                    ></iframe>
+                  ) : (
                           <div className="video-placeholder">
-                            <p>Video Unavailable</p>
-                          </div>
-                        )}
+                      <p>Video Unavailable</p>
+                    </div>
+                  )}
                       </div>
                     </div>
                     <div className="video-details">
                       <h3>{video.title || 'Nard Candles Creation'}</h3>
-                      <p>{video.description}</p>
+                  <p>{video.description}</p>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
+                </div>
+              );
+            })}
+          </div>
+        ) : (
             <div className="no-videos-message stagger-item">
               <div className="message-content">
                 <i className="video-icon">🎥</i>
-                <p>No videos available at the moment. Please check back later.</p>
-              </div>
+            <p>No videos available at the moment. Please check back later.</p>
+          </div>
             </div>
           )}
         </div>
@@ -320,7 +324,7 @@ const Home = () => {
                   Add Special Decorations
                 </li>
               </ul>
-              <Link to="/custom-order" className="custom-order-button stagger-item">
+              <Link to="/custom-orders" className="custom-order-button stagger-item">
                 Start Designing
                 <span className="button-arrow">→</span>
               </Link>
@@ -346,13 +350,13 @@ const Home = () => {
         <div className="section-container">
           <div className="mission-content">
             <div className="mission-text stagger-item">
-              <h2>Our Mission</h2>
+        <h2>Our Mission</h2>
               <div className="decorative-line"></div>
-              <p>
-                At Nard Candles, we believe in creating a calming and serene environment in every home.
-                Our mission is to provide high-quality, eco-friendly candles that elevate your space
-                and enhance your well-being.
-              </p>
+        <p>
+          At Nard Candles, we believe in creating a calming and serene environment in every home.
+          Our mission is to provide high-quality, eco-friendly candles that elevate your space
+          and enhance your well-being.
+        </p>
               <div className="mission-values">
                 <div className="value-item stagger-item">
                   <span className="value-icon">🌿</span>
@@ -389,7 +393,7 @@ const Home = () => {
               </div>
             </div>
             <div className="story-text stagger-item">
-              <h2>Our Story</h2>
+        <h2>Our Story</h2>
               <div className="decorative-line"></div>
               <div className="timeline">
                 <div className="timeline-item stagger-item">
@@ -473,7 +477,7 @@ const Home = () => {
                   <li>Seasonal collections</li>
                   <li>Classic fragrances</li>
                   <li>Custom blends</li>
-                </ul>
+        </ul>
               </div>
             </div>
           </div>
@@ -483,9 +487,9 @@ const Home = () => {
       <div className="section-container">
         <Link to="/register" className="register-link fade-in-up">
           <button className="register-button stagger-item">
-            Register for Training
-          </button>
-        </Link>
+      Register for Training
+    </button>
+  </Link>
       </div>
     </div>
   );
