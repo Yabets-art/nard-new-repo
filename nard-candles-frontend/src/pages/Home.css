@@ -211,6 +211,10 @@ body {
     font-size: 1rem;
     padding: 0.75rem;
   }
+  
+  .promotion-background {
+    height: 300px; /* Adjust height for smaller screens */
+  }
 
   .cta-button {
     font-size: 0.9rem;
