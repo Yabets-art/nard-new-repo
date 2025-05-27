@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PaymentDebug from '../components/PaymentDebug';
+import { motion, AnimatePresence } from 'framer-motion';
 import './MyCart.css';
 
 const MyCart = () => {
@@ -17,6 +18,35 @@ const MyCart = () => {
     const { isAuthenticated, user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { 
+            opacity: 1, 
+            y: 0,
+            transition: { duration: 0.6, ease: "easeOut" }
+        },
+        exit: { 
+            opacity: 0, 
+            y: -20,
+            transition: { duration: 0.4 }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, x: -20 },
+        visible: { 
+            opacity: 1, 
+            x: 0,
+            transition: { duration: 0.5, ease: "easeOut" }
+        },
+        exit: { 
+            opacity: 0, 
+            x: 20,
+            transition: { duration: 0.3 }
+        }
+    };
 
     // Fetch cart items
     useEffect(() => {
@@ -94,10 +124,11 @@ const MyCart = () => {
                 throw new Error('Failed to update quantity');
             }
             
-            // Update local state
-            setCartItems(cartItems.map(item => 
-                item.id === itemId ? { ...item, quantity: newQuantity } : item
-            ));
+            setCartItems(prevItems =>
+                prevItems.map(item =>
+                    item.id === itemId ? { ...item, quantity: newQuantity } : item
+                )
+            );
         } catch (err) {
             setError('Error updating quantity: ' + err.message);
             console.error('Error updating quantity:', err);
@@ -107,23 +138,18 @@ const MyCart = () => {
     const removeItem = async (itemId) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://127.0.0.1:8000/api/cart/remove`, {
-                method: 'POST',
+            const response = await fetch(`http://127.0.0.1:8000/api/cart/remove/${itemId}`, {
+                method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    item_id: itemId
-                })
+                }
             });
             
             if (!response.ok) {
                 throw new Error('Failed to remove item');
             }
             
-            // Update local state
-            setCartItems(cartItems.filter(item => item.id !== itemId));
+            setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
         } catch (err) {
             setError('Error removing item: ' + err.message);
             console.error('Error removing item:', err);
@@ -134,9 +160,8 @@ const MyCart = () => {
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`http://127.0.0.1:8000/api/cart/clear`, {
-                method: 'POST',
+                method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
             });
@@ -145,7 +170,6 @@ const MyCart = () => {
                 throw new Error('Failed to clear cart');
             }
             
-            // Update local state
             setCartItems([]);
         } catch (err) {
             setError('Error clearing cart: ' + err.message);
@@ -301,97 +325,165 @@ const MyCart = () => {
     };
 
     if (isLoading) {
-        return <div className="cart-container"><p>Loading your cart...</p></div>;
+        return (
+            <motion.div 
+                className="cart-container"
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={containerVariants}
+            >
+                <div className="loading-spinner">Loading your cart...</div>
+            </motion.div>
+        );
     }
 
     return (
-        <div className="cart-container">
+        <motion.div 
+            className="cart-container"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={containerVariants}
+        >
             <h1>My Shopping Cart</h1>
             
-            {error && <div className="error-message">{error}</div>}
-            
-            {cartItems.length === 0 ? (
-                <div className="empty-cart">
-                    <p>Your cart is empty</p>
-                    <Link to="/products" className="btn btn-primary">Continue Shopping</Link>
-                </div>
-            ) : (
-                <>
-                    <div className="cart-items">
-                        {cartItems.map((item) => (
-                            <div key={item.id} className="cart-item">
-                                <div className="cart-item-details">
-                                    <h3>{item.product_name}</h3>
-                                    <p className="price">${parseFloat(item.price).toFixed(2)}</p>
-                                </div>
-                                <div className="cart-item-actions">
-                                    <div className="quantity-control">
-                                        <button 
-                                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                            disabled={item.quantity <= 1}
-                                        >
-                                            -
-                                        </button>
-                                        <span>{item.quantity}</span>
-                                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>
-                                            +
-                                        </button>
-                                    </div>
-                                    <p className="item-total">
-                                        ${(parseFloat(item.price) * item.quantity).toFixed(2)}
-                                    </p>
-                                    <button 
-                                        className="remove-btn"
-                                        onClick={() => removeItem(item.id)}
-                                    >
-                                        Remove
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    
-                    <div className="cart-summary">
-                        <div className="cart-total">
-                            <span>Total:</span>
-                            <span>${total.toFixed(2)}</span>
-                        </div>
-                        
-                        <div className="cart-actions">
-                            <button className="clear-btn" onClick={clearCart}>
-                                Clear Cart
-                            </button>
-                            <button className="checkout-btn" onClick={initiatePayment}>
-                                Proceed to Payment
-                            </button>
-                        </div>
-                        
-                        {checkoutStatus && (
-                            <div className="checkout-status">
-                                {checkoutStatus}
-                                {checkoutStatus.includes('completing the payment') && (
-                                    <div className="order-link">
-                                        <Link to="/my-orders">View My Orders</Link>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                        
-                        {showProfileWarning && (
-                            <div className="profile-warning">
-                                <p>Your profile information is incomplete or invalid.</p>
-                                <button onClick={goToProfile} className="update-profile-btn">
-                                    Update Profile
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </>
+            {error && (
+                <motion.div 
+                    className="error-message"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                >
+                    {error}
+                </motion.div>
             )}
             
-            <div className="cart-footer">
+            <AnimatePresence mode="wait">
+                {cartItems.length === 0 ? (
+                    <motion.div 
+                        className="empty-cart"
+                        key="empty"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                    >
+                        <p>Your cart is empty</p>
+                        <Link to="/products" className="btn btn-primary">Continue Shopping</Link>
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="cart"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                    >
+                        <div className="cart-items">
+                            <AnimatePresence>
+                                {cartItems.map((item) => (
+                                    <motion.div 
+                                        key={item.id} 
+                                        className="cart-item"
+                                        variants={itemVariants}
+                                        initial="hidden"
+                                        animate="visible"
+                                        exit="exit"
+                                        layout
+                                    >
+                                        <div className="cart-item-details">
+                                            <h3>{item.product_name}</h3>
+                                            <p className="price">${parseFloat(item.price).toFixed(2)}</p>
+                                        </div>
+                                        <div className="cart-item-actions">
+                                            <div className="quantity-control">
+                                                <button 
+                                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                                    disabled={item.quantity <= 1}
+                                                >
+                                                    -
+                                                </button>
+                                                <span>{item.quantity}</span>
+                                                <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                                                    +
+                                                </button>
+                                            </div>
+                                            <p className="item-total">
+                                                ${(parseFloat(item.price) * item.quantity).toFixed(2)}
+                                            </p>
+                                            <button 
+                                                className="remove-btn"
+                                                onClick={() => removeItem(item.id)}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </div>
+                        
+                        <motion.div 
+                            className="cart-summary"
+                            variants={containerVariants}
+                        >
+                            <div className="cart-total">
+                                <span>Total:</span>
+                                <span>${total.toFixed(2)}</span>
+                            </div>
+                            
+                            <div className="cart-actions">
+                                <button className="clear-btn" onClick={clearCart}>
+                                    Clear Cart
+                                </button>
+                                <button className="checkout-btn" onClick={initiatePayment}>
+                                    Proceed to Payment
+                                </button>
+                            </div>
+                            
+                            <AnimatePresence>
+                                {checkoutStatus && (
+                                    <motion.div 
+                                        className="checkout-status"
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 10 }}
+                                    >
+                                        {checkoutStatus}
+                                        {checkoutStatus.includes('completing the payment') && (
+                                            <div className="order-link">
+                                                <Link to="/my-orders">View My Orders</Link>
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                )}
+                                
+                                {showProfileWarning && (
+                                    <motion.div 
+                                        className="profile-warning"
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 10 }}
+                                    >
+                                        <p>Your profile information is incomplete or invalid.</p>
+                                        <button onClick={goToProfile} className="update-profile-btn">
+                                            Update Profile
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            
+            <motion.div 
+                className="cart-footer"
+                variants={containerVariants}
+            >
                 <Link to="/my-orders" className="view-orders-link">View My Order History</Link>
-            </div>
+            </motion.div>
             
             {/* Replace this debug payload display with PaymentDebug component */}
             {/* {debugPayload && debugPayload.serverResponse && (
@@ -405,7 +497,7 @@ const MyCart = () => {
             {/* <div className="debug-section">
                 ... (all debug section JSX removed) ...
             </div> */}
-        </div>
+        </motion.div>
     );
 };
 

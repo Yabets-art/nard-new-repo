@@ -1,153 +1,517 @@
-/* General Styles */
+/* Base Styles */
 .about-container {
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fff6f0 0%, #fff 100%);
+}
+
+/* Hero Section */
+.about-hero {
+  position: relative;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  overflow: hidden;
+}
+
+.about-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, rgba(153, 99, 60, 0.1) 0%, transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.hero-content {
+  text-align: center;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content h1 {
+  font-size: 4rem;
+  color: #333;
+  margin-bottom: 2rem;
+  font-family: 'Libre Bodoni', serif;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.hero-description {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.hero-description p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #666;
+}
+
+.floating-candles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.candle-icon {
+  position: absolute;
+  font-size: 3.5rem;
+  opacity: 0.8;
+  animation: float 6s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.candle-icon:nth-child(1) {
+  top: 15%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.candle-icon:nth-child(2) {
+  top: 25%;
+  right: 15%;
+  animation-delay: 2s;
+}
+
+.candle-icon:nth-child(3) {
+  bottom: 25%;
+  left: 45%;
+  animation-delay: 4s;
+}
+
+/* Section Common Styles */
+section {
+  padding: 6rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.section-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 50px;
-  font-family: 'Roboto', sans-serif;
-  color: #333;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.about-section,
-.mission-section,
-.unique-section,
-.journey-section,
-.sustainability-section {
-  margin-bottom: 60px;
-}
-
-h1, h2 {
-  font-family: 'Playfair Display', serif;
-  color: #2c3e50;
-  position: relative;
-}
-
-h1 {
-  font-size: 3em;
-  margin-bottom: 20px;
-  text-align: center;
 }
 
 h2 {
-  font-size: 2.5em;
-  margin-bottom: 15px;
+  font-size: 3rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-family: 'Libre Bodoni', serif;
 }
 
-p {
-  font-size: 1.2em;
-  line-height: 1.8;
-  color: #555;
-  margin-bottom: 30px;
-  text-align: justify;
+.decorative-line {
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #4a6741, #99633c);
+  margin: 1rem auto 3rem;
+  position: relative;
 }
 
-/* List */
-ul {
+.decorative-line::before,
+.decorative-line::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4a6741;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.decorative-line::before {
+  left: -10px;
+}
+
+.decorative-line::after {
+  right: -10px;
+}
+
+/* Mission Section */
+.mission-section {
+  background: #fff;
+  position: relative;
+}
+
+.mission-values {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.value-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.value-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.value-card h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.value-card p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Features Section */
+.features-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.feature-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.feature-card p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.hover-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(74, 103, 65, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.feature-card:hover .hover-content {
+  opacity: 1;
+}
+
+.hover-content ul {
   list-style: none;
   padding: 0;
+  margin: 0;
+  color: white;
 }
 
-li {
-  font-size: 1.2em;
-  line-height: 1.8;
-  margin-bottom: 10px;
-  color: #34495e;
+.hover-content ul li {
+  margin: 1rem 0;
+  font-size: 1.1rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
 }
 
-li strong {
-  color: #e74c3c;
+.feature-card:hover .hover-content ul li {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.about-container strong {
-  color: #2980b9;
+.feature-card:hover .hover-content ul li:nth-child(1) { transition-delay: 0.1s; }
+.feature-card:hover .hover-content ul li:nth-child(2) { transition-delay: 0.2s; }
+.feature-card:hover .hover-content ul li:nth-child(3) { transition-delay: 0.3s; }
+
+/* Journey Section */
+.journey-section {
+  background: #fff;
 }
 
-/* Styling for section separators */
-h2::after {
+.timeline {
+  max-width: 800px;
+  margin: 4rem auto 0;
+  position: relative;
+  padding: 2rem 0;
+}
+
+.timeline::before {
   content: '';
-  
-  width: 60px;
-  height: 3px;
-  background: #e74c3c;
-  margin: 10px auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, #4a6741, transparent);
+  top: 0;
 }
 
-/* Fade-in Animation */
+.timeline-item {
+  margin: 4rem 0;
+  position: relative;
+  width: 50%;
+  padding: 0 3rem;
+}
+
+.timeline-item:nth-child(odd) {
+  left: 0;
+  text-align: right;
+}
+
+.timeline-item:nth-child(even) {
+  left: 50%;
+  text-align: left;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #4a6741;
+  border-radius: 50%;
+  top: 0;
+}
+
+.timeline-item:nth-child(odd)::before {
+  right: -10px;
+}
+
+.timeline-item:nth-child(even)::before {
+  left: -10px;
+}
+
+.year {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4a6741;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.timeline-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.timeline-content h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.timeline-content p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Sustainability Section */
+.sustainability-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+}
+
+.sustainability-content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4rem;
+  align-items: center;
+  margin-top: 4rem;
+}
+
+.sustainability-text {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #666;
+}
+
+.eco-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+}
+
+.eco-badge {
+  text-align: center;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.eco-badge:hover {
+  transform: translateY(-10px);
+}
+
+.badge-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.eco-badge p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* Animation Classes */
+.animate-on-scroll {
+  opacity: 0;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-down {
+  transform: translateY(-50px);
+}
+
+.slide-up {
+  transform: translateY(50px);
+}
+
 .fade-in {
   opacity: 0;
   transform: translateY(20px);
-  animation: fadeIn 1s ease-in-out forwards;
 }
 
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
+.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .hero-content h1 {
+    font-size: 3rem;
+  }
+
+  .sustainability-content {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline::before {
+    left: 0;
+  }
+
+  .timeline-item {
+    width: 100%;
+    left: 0 !important;
+    text-align: left !important;
+    padding-left: 3rem;
+  }
+
+  .timeline-item::before {
+    left: -10px !important;
   }
 }
 
-/* Hover effect on list items */
-ul li:hover {
-  color: #e67e22;
-  cursor: pointer;
-}
-
-/* Button styling (optional) */
-button {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #2980b9;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1.1em;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #3498db;
-}
-
-/* Media Queries for Responsiveness */
 @media (max-width: 768px) {
-  .about-container {
-    padding: 20px;
+  section {
+    padding: 4rem 1.5rem;
   }
 
-  h1 {
-    font-size: 2.2em;
+  .hero-content h1 {
+    font-size: 2.5rem;
   }
 
   h2 {
-    font-size: 1.8em;
+    font-size: 2.2rem;
   }
 
-  p, li {
-    font-size: 1em;
+  .mission-values,
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .eco-badges {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 }
 
 @media (max-width: 480px) {
-  .about-container {
-    padding: 15px;
+  .hero-content h1 {
+    font-size: 2rem;
   }
 
-  h1 {
-    font-size: 2em;
+  .hero-description {
+    padding: 1.5rem;
   }
 
   h2 {
-    font-size: 1.5em;
+    font-size: 1.8rem;
   }
 
-  p, li {
-    font-size: 0.9em;
-  }
-
-  ul {
-    padding-left: 15px;
+  .timeline-item {
+    padding-left: 2rem;
   }
 }
