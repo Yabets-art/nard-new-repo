@@ -16,6 +16,7 @@ use App\Http\Middleware\VerifyCsrfToken;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use App\Http\Controllers\TrainersController;
 use App\Http\Controllers\OrderController;
+use Illuminate\Support\Facades\Auth;
 
 
 /*
@@ -35,6 +36,16 @@ Route::get('/admin/topbar', [TopbarController::class, 'getNavbarAlerts'])->name(
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+// Add admin login route
+Route::middleware('guest')->group(function () {
+    Route::get('/admin/login', function () {
+        if (Auth::check() && Auth::user()->is_admin) {
+            return redirect()->route('dashboard');
+        }
+        return view('auth.login');
+    })->name('admin.login');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -126,26 +137,5 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::get('/admin/messages/{message}', [MessageController::class, 'show'])->name('messages.show');
-
-// Temporary admin access route (REMOVE THIS IN PRODUCTION)
-Route::get('/force-admin-access', function () {
-    // Find our admin user
-    $user = \App\Models\User::where('email', 'yabetsd29@gmail.com')->first();
-    
-    if (!$user) {
-        return "User not found!";
-    }
-    
-    // Force login
-    \Illuminate\Support\Facades\Auth::login($user);
-    
-    // Debug user info
-    echo "Logged in as: " . $user->email . "<br>";
-    echo "Is admin: " . ($user->is_admin ? 'YES' : 'NO') . "<br>";
-    echo "Admin type: " . gettype($user->is_admin) . "<br>";
-    echo "Admin value: " . var_export($user->is_admin, true) . "<br>";
-    
-    return redirect()->intended(\App\Providers\RouteServiceProvider::HOME);
-});
 
 require __DIR__ . '/auth.php';

@@ -10,6 +10,7 @@ import mostLiked1 from '../assets/mostLiked1.jpg';
 import mostLiked2 from '../assets/mostLiked2.jpg';
 import mostLiked3 from '../assets/mostLiked3.jpg';
 import { Link } from "react-router-dom";
+import placeholderImage from '../assets/placeholder.svg';
 
 const Home = () => {
   const [promotions, setPromotions] = useState([]);
@@ -112,6 +113,13 @@ const Home = () => {
     },
   };
 
+  // Add this function at the top level of the component
+  const handleImageError = (e, imagePath) => {
+    console.log('Image failed to load:', imagePath);
+    e.target.onerror = null; // Prevent infinite loop
+    e.target.src = placeholderImage;
+  };
+
   return (
     <div className="home-container">
       {/* Hero Section */}
@@ -121,6 +129,8 @@ const Home = () => {
           backgroundImage: currentPromo
             ? `url(${baseURL}storage/${currentPromo.media})`
             : 'none',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
         {currentPromo && (
@@ -142,12 +152,8 @@ const Home = () => {
             <div key={candle.id} className="gallery-item">
               <img 
                 src={`${baseURL}storage/${candle.image}`} 
-                alt={candle.name} 
-                onError={(e) => {
-                  console.log('Image failed to load:', `${baseURL}storage/${candle.image}`);
-                  e.target.onerror = null;
-                  e.target.src = 'https://via.placeholder.com/150?text=Product';
-                }}
+                alt={candle.name}
+                onError={(e) => handleImageError(e, `${baseURL}storage/${candle.image}`)}
               />
               <p>{candle.name}</p>
             </div>
