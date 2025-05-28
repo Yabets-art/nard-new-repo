@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import './Home.css';
-import mostSold1 from '../assets/mostSold1.jpg';
-import mostSold2 from '../assets/mostSold2.jpg';
-import mostSold3 from '../assets/mostSold3.jpg';
-import mostSold4 from '../assets/mostSold4.jpg';
-import mostSold5 from '../assets/mostSold5.jpg';
-import mostSold6 from '../assets/mostSold6.jpg';
-import mostLiked1 from '../assets/mostLiked1.jpg';
-import mostLiked2 from '../assets/mostLiked2.jpg';
-import mostLiked3 from '../assets/mostLiked3.jpg';
+// import mostSold1 from '../assets/mostSold1.jpg';
+// import mostSold2 from '../assets/mostSold2.jpg';
+// import mostSold3 from '../assets/mostSold3.jpg';
+// import mostSold4 from '../assets/mostSold4.jpg';
+// import mostSold5 from '../assets/mostSold5.jpg';
+// import mostSold6 from '../assets/mostSold6.jpg';
+// import mostLiked1 from '../assets/mostLiked1.jpg';
+// import mostLiked2 from '../assets/mostLiked2.jpg';
+// import mostLiked3 from '../assets/mostLiked3.jpg';
 import { Link, useNavigate } from "react-router-dom";
 import placeholderImage from '../assets/placeholder.svg';
 import axios from 'axios';
@@ -41,18 +41,18 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        const response = await axios.get(`${baseURL}api/products`);
+        const response = await axios.get(`${baseURL}api/featured_products`);
         
         if (Array.isArray(response.data) && response.data.length > 0) {
           // Get first 4 products as featured items
-          const processedProducts = response.data.slice(0, 4).map(product => {
+          const processedProducts = response.data.map(product => {
             let imagePath = product.image;
             if (imagePath === 'images/mostSold1.jpg' || imagePath === 'images/mostliked3.jpg') {
               imagePath = imagePath + '.jpg';
             }
             return {
               ...product,
-              image: imagePath.startsWith('images/') ? imagePath : `images/${imagePath}`
+              image: "storage/"+ imagePath
             };
           });
           setFeaturedCandles(processedProducts);
@@ -213,10 +213,6 @@ const Home = () => {
               <img 
                       src={`${baseURL}${candle.image}`} 
                 alt={candle.name} 
-                onError={(e) => {
-                  e.target.onerror = null;
-                        e.target.src = placeholderImage;
-                }}
               />
                     <div className="product-overlay">
                       <span className="view-details">View Details</span>
@@ -224,7 +220,7 @@ const Home = () => {
                   </div>
                   <div className="product-details">
                     <h3>{candle.name}</h3>
-                    <p className="product-price">${parseFloat(candle.price).toFixed(2)}</p>
+                    {/* <p className="product-price">${parseFloat(candle.price).toFixed(2)}</p> */}
                   </div>
                 </div>
               ))}
@@ -484,13 +480,13 @@ const Home = () => {
         </div>
       </section>
 
-      <div className="section-container">
+      {/* <div className="section-container">
         <Link to="/register" className="register-link fade-in-up">
           <button className="register-button stagger-item">
       Register for Training
     </button>
   </Link>
-      </div>
+      </div> */}
     </div>
   );
 };
