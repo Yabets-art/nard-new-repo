@@ -91,6 +91,7 @@
         background: linear-gradient(180deg, #4e73df, #224abe);
         /* overflow-y: auto; */
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+        z-index: 9999
     }
 
     .sidebar .nav-item {
